@@ -24,6 +24,7 @@
 
 #include "main.h"
 
-
+void initializeBoard(void);
+void init_hardware(void);
 
 #endif

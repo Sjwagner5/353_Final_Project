@@ -23,8 +23,13 @@
 #include "main.h"
 #include "project_interrupts.h"
 
+//Timer 1 ISR that blinks the red LED to indicate that the program is running
 void TIMER1A_Handler(void) {
-	ALERT_LED = true;
+	int i;
+	lp_io_set_pin(RED_BIT);
+	for (i = 0; i < 10000; i++) {
+	}
+	lp_io_clear_pin(RED_BIT);
 	TIMER1->ICR |= TIMER_ICR_TATOCINT;
 }
 

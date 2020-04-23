@@ -20,20 +20,20 @@
 // NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
 // EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "main.h"
-
-void initializeBoard(void)
-{
-  
-  DisableInterrupts();
-  init_serial_debug(true, true);
-  EnableInterrupts();
-}
-
+#include "project_hardware_init.h"
 
 void init_hardware(void) {
-	lp_io_init();
-	gp_timer_config_32(TIMER1_BASE, TIMER_TAMR_TAMR_1_SHOT, false, true);
+	init_serial_debug(true, true);
 	
+	lcd_config_gpio();
+	lcd_config_screen();
+	lcd_clear_screen(LCD_COLOR_BLACK);
+	
+	ps2_initialize();
+	lp_io_init();
+	ft6x06_init();
+	eeprom_init();
+	
+	gp_timer_config_32(TIMER1_BASE, TIMER_TAMR_TAMR_PERIOD, 500000, false, true);
 }
 

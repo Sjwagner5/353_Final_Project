@@ -23,6 +23,7 @@
 #define __INTERRUPTS_H__
 
 #include "main.h"
+
 void init_hardware(void);
 void initializeBoard(void);
 #endif

@@ -40,12 +40,19 @@ void EnableInterrupts(void)
   }
 }
 
+void game_main(void) {
+	bool gameOver = false;
+	while (!gameOver) {
+		gp_timer_wait(TIMER1_BASE, 5000000);
+	}
+}
+
 //*****************************************************************************
 //*****************************************************************************
 int 
 main(void)
 {
-		initializeBoard();
-		project_main();
+		init_hardware();
+		game_main();
     while(1){};
 }
