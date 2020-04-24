@@ -26,13 +26,16 @@
 //Timer 1 ISR that blinks the red LED to indicate that the program is running
 void TIMER1A_Handler(void) {
 	int i;
-	lp_io_set_pin(RED_BIT);
-	for (i = 0; i < 10000; i++) {
-	}
-	lp_io_clear_pin(RED_BIT);
+	lp_io_set_pin(RED_M);
+	for (i = 0; i < 100000; i++) {}
+	lp_io_clear_pin(RED_M);
 	TIMER1->ICR |= TIMER_ICR_TATOCINT;
 }
 
+//Timer 4 ISR will check the ADC every 10 ms
+void TIMER4A_Handler(void) {
+	
+}
 
 
 

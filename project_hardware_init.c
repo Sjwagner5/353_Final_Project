@@ -22,6 +22,8 @@
 
 #include "project_hardware_init.h"
 
+#define	TEN_MS	500000 // this will be used to have Timer 4 interrupt every 10 ms	
+
 void init_hardware(void) {
 	init_serial_debug(true, true);
 	
@@ -34,6 +36,7 @@ void init_hardware(void) {
 	ft6x06_init();
 	eeprom_init();
 	
-	gp_timer_config_32(TIMER1_BASE, TIMER_TAMR_TAMR_PERIOD, 500000, false, true);
+	gp_timer_config_32(TIMER1_BASE, TIMER_TAMR_TAMR_PERIOD, 50000000, false, true);
+	gp_timer_config_32(TIMER4_BASE, TIMER_TAMR_TAMR_PERIOD, TEN_MS, false, true);
 }
 
