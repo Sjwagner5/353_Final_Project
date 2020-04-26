@@ -30,13 +30,15 @@ void init_hardware(void) {
 	lcd_config_gpio();
 	lcd_config_screen();
 	lcd_clear_screen(LCD_COLOR_BLACK);
-	
 	ps2_initialize();
 	lp_io_init();
 	ft6x06_init();
 	eeprom_init();
 	
 	gp_timer_config_32(TIMER1_BASE, TIMER_TAMR_TAMR_PERIOD, 50000000, false, true);
-	gp_timer_config_32(TIMER4_BASE, TIMER_TAMR_TAMR_PERIOD, TEN_MS, false, true);
+	gp_timer_config_32(TIMER2_BASE, TIMER_TAMR_TAMR_PERIOD, 500000, false, true);
+	gp_timer_config_32(TIMER3_BASE, TIMER_TAMR_TAMR_PERIOD, 500000, false, true);
+	gp_timer_config_32(TIMER5_BASE, TIMER_TAMR_TAMR_PERIOD, 500000, false, true);
+	//gp_timer_config_32(TIMER4_BASE, TIMER_TAMR_TAMR_PERIOD, TEN_MS, false, true);
 }
 
