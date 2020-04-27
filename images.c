@@ -591,3 +591,501 @@ const FONT_INFO vinerHandITC_14ptFontInfo =
 	vinerHandITC_14ptBitmaps, //  Character bitmap array
 };
 
+// 
+//  Font data for Courier New 10pt
+// 
+
+// Character bitmaps for Courier New 10pt
+const uint8_t courierNew_10ptBitmaps[] = 
+{
+	// @0 'C' (6 pixels wide)
+	0x3C, //   ####
+	0x44, //  #   #
+	0x80, // #     
+	0x80, // #     
+	0x80, // #     
+	0x80, // #     
+	0x44, //  #   #
+	0x38, //   ### 
+
+	// @8 'E' (6 pixels wide)
+	0xFC, // ######
+	0x44, //  #   #
+	0x50, //  # #  
+	0x70, //  ###  
+	0x50, //  # #  
+	0x40, //  #    
+	0x44, //  #   #
+	0xFC, // ######
+
+	// @16 'H' (7 pixels wide)
+	0xEE, // ### ###
+	0x44, //  #   # 
+	0x44, //  #   # 
+	0x7C, //  ##### 
+	0x44, //  #   # 
+	0x44, //  #   # 
+	0x44, //  #   # 
+	0xEE, // ### ###
+
+	// @24 'I' (5 pixels wide)
+	0xF8, // #####
+	0x20, //   #  
+	0x20, //   #  
+	0x20, //   #  
+	0x20, //   #  
+	0x20, //   #  
+	0x20, //   #  
+	0xF8, // #####
+
+	// @32 'J' (6 pixels wide)
+	0x3C, //   ####
+	0x08, //     # 
+	0x08, //     # 
+	0x08, //     # 
+	0x88, // #   # 
+	0x88, // #   # 
+	0x88, // #   # 
+	0x70, //  ###  
+
+	// @40 'K' (7 pixels wide)
+	0xEE, // ### ###
+	0x44, //  #   # 
+	0x48, //  #  #  
+	0x50, //  # #   
+	0x70, //  ###   
+	0x48, //  #  #  
+	0x44, //  #   # 
+	0xE6, // ###  ##
+
+	// @48 'L' (6 pixels wide)
+	0xE0, // ###   
+	0x40, //  #    
+	0x40, //  #    
+	0x40, //  #    
+	0x40, //  #    
+	0x44, //  #   #
+	0x44, //  #   #
+	0xFC, // ######
+
+	// @56 'O' (7 pixels wide)
+	0x38, //   ###  
+	0x44, //  #   # 
+	0x82, // #     #
+	0x82, // #     #
+	0x82, // #     #
+	0x82, // #     #
+	0x44, //  #   # 
+	0x38, //   ###  
+
+	// @64 'S' (6 pixels wide)
+	0x74, //  ### #
+	0x8C, // #   ##
+	0x80, // #     
+	0x78, //  #### 
+	0x04, //      #
+	0x04, //      #
+	0xC4, // ##   #
+	0xB8, // # ### 
+
+	// @72 'T' (7 pixels wide)
+	0xFE, // #######
+	0x92, // #  #  #
+	0x10, //    #   
+	0x10, //    #   
+	0x10, //    #   
+	0x10, //    #   
+	0x10, //    #   
+	0x38, //   ###  
+
+	// @80 'U' (7 pixels wide)
+	0xEE, // ### ###
+	0x44, //  #   # 
+	0x44, //  #   # 
+	0x44, //  #   # 
+	0x44, //  #   # 
+	0x44, //  #   # 
+	0x44, //  #   # 
+	0x38, //   ###  
+
+	// @88 'V' (8 pixels wide)
+	0xE7, // ###  ###
+	0x42, //  #    # 
+	0x42, //  #    # 
+	0x24, //   #  #  
+	0x24, //   #  #  
+	0x24, //   #  #  
+	0x18, //    ##   
+	0x18, //    ##   
+
+	// @96 'Y' (7 pixels wide)
+	0xEE, // ### ###
+	0x44, //  #   # 
+	0x28, //   # #  
+	0x28, //   # #  
+	0x10, //    #   
+	0x10, //    #   
+	0x10, //    #   
+	0x38, //   ###  
+};
+
+// Character descriptors for Courier New 10pt
+// { [Char width in bits], [Offset into courierNew_10ptCharBitmaps in bytes] }
+const FONT_CHAR_INFO courierNew_10ptDescriptors[] = 
+{
+	{6, 0}, 		// C 
+	{0, 0}, 		// D 
+	{6, 8}, 		// E 
+	{0, 0}, 		// F 
+	{0, 0}, 		// G 
+	{7, 16}, 		// H 
+	{5, 24}, 		// I 
+	{6, 32}, 		// J 
+	{7, 40}, 		// K 
+	{6, 48}, 		// L 
+	{0, 0}, 		// M 
+	{0, 0}, 		// N 
+	{7, 56}, 		// O 
+	{0, 0}, 		// P 
+	{0, 0}, 		// Q 
+	{0, 0}, 		// R 
+	{6, 64}, 		// S 
+	{7, 72}, 		// T 
+	{7, 80}, 		// U 
+	{8, 88}, 		// V 
+	{0, 0}, 		// W 
+	{0, 0}, 		// X 
+	{7, 96}, 		// Y 
+};
+
+// Font information for Courier New 10pt
+const FONT_INFO courierNew_10ptFontInfo =
+{
+	1, //  Character height
+	'C', //  Start character
+	'Y', //  End character
+	2, //  Width, in pixels, of space character
+	courierNew_10ptDescriptors, //  Character descriptor array
+	courierNew_10ptBitmaps, //  Character bitmap array
+};
+
+// 
+//  Font data for Courier New 12pt
+// 
+
+// Character bitmaps for Courier New 12pt
+const uint8_t courierNew_12ptBitmaps[] = 
+{
+	// @0 'A' (10 pixels wide)
+	0x7E, 0x00, //  ######   
+	0x1E, 0x00, //    ####   
+	0x12, 0x00, //    #  #   
+	0x33, 0x00, //   ##  ##  
+	0x33, 0x00, //   ##  ##  
+	0x3F, 0x00, //   ######  
+	0x61, 0x80, //  ##    ## 
+	0x61, 0x80, //  ##    ## 
+	0xF3, 0xC0, // ####  ####
+
+	// @18 'D' (9 pixels wide)
+	0xFE, 0x00, // #######  
+	0x63, 0x00, //  ##   ## 
+	0x61, 0x80, //  ##    ##
+	0x61, 0x80, //  ##    ##
+	0x61, 0x80, //  ##    ##
+	0x61, 0x80, //  ##    ##
+	0x61, 0x80, //  ##    ##
+	0x63, 0x00, //  ##   ## 
+	0xFE, 0x00, // #######  
+
+	// @36 'E' (8 pixels wide)
+	0xFF, // ########
+	0x61, //  ##    #
+	0x61, //  ##    #
+	0x64, //  ##  #  
+	0x7C, //  #####  
+	0x64, //  ##  #  
+	0x61, //  ##    #
+	0x61, //  ##    #
+	0xFF, // ########
+
+	// @45 'H' (9 pixels wide)
+	0xF7, 0x80, // #### ####
+	0x63, 0x00, //  ##   ## 
+	0x63, 0x00, //  ##   ## 
+	0x63, 0x00, //  ##   ## 
+	0x7F, 0x00, //  ####### 
+	0x63, 0x00, //  ##   ## 
+	0x63, 0x00, //  ##   ## 
+	0x63, 0x00, //  ##   ## 
+	0xF7, 0x80, // #### ####
+
+	// @63 'I' (8 pixels wide)
+	0xFF, // ########
+	0x18, //    ##   
+	0x18, //    ##   
+	0x18, //    ##   
+	0x18, //    ##   
+	0x18, //    ##   
+	0x18, //    ##   
+	0x18, //    ##   
+	0xFF, // ########
+
+	// @72 'M' (11 pixels wide)
+	0xE0, 0xE0, // ###     ###
+	0x60, 0xC0, //  ##     ## 
+	0x71, 0xC0, //  ###   ### 
+	0x7B, 0xC0, //  #### #### 
+	0x6A, 0xC0, //  ## # # ## 
+	0x6E, 0xC0, //  ## ### ## 
+	0x64, 0xC0, //  ##  #  ## 
+	0x60, 0xC0, //  ##     ## 
+	0xFB, 0xE0, // ##### #####
+
+	// @90 'R' (10 pixels wide)
+	0xFE, 0x00, // #######   
+	0x63, 0x00, //  ##   ##  
+	0x63, 0x00, //  ##   ##  
+	0x63, 0x00, //  ##   ##  
+	0x7C, 0x00, //  #####    
+	0x66, 0x00, //  ##  ##   
+	0x63, 0x00, //  ##   ##  
+	0x63, 0x00, //  ##   ##  
+	0xF9, 0xC0, // #####  ###
+
+	// @108 'S' (7 pixels wide)
+	0x7E, //  ######
+	0xC6, // ##   ##
+	0xC6, // ##   ##
+	0xE0, // ###    
+	0x7C, //  ##### 
+	0x0E, //     ###
+	0xC6, // ##   ##
+	0xC6, // ##   ##
+	0xFC, // ###### 
+
+	// @117 'U' (9 pixels wide)
+	0xF7, 0x80, // #### ####
+	0x63, 0x00, //  ##   ## 
+	0x63, 0x00, //  ##   ## 
+	0x63, 0x00, //  ##   ## 
+	0x63, 0x00, //  ##   ## 
+	0x63, 0x00, //  ##   ## 
+	0x63, 0x00, //  ##   ## 
+	0x63, 0x00, //  ##   ## 
+	0x3E, 0x00, //   #####  
+
+	// @135 'Y' (10 pixels wide)
+	0xF3, 0xC0, // ####  ####
+	0x61, 0x80, //  ##    ## 
+	0x33, 0x00, //   ##  ##  
+	0x1E, 0x00, //    ####   
+	0x0C, 0x00, //     ##    
+	0x0C, 0x00, //     ##    
+	0x0C, 0x00, //     ##    
+	0x0C, 0x00, //     ##    
+	0x3F, 0x00, //   ######  
+};
+
+// Character descriptors for Courier New 12pt
+// { [Char width in bits], [Offset into courierNew_12ptCharBitmaps in bytes] }
+const FONT_CHAR_INFO courierNew_12ptDescriptors[] = 
+{
+	{10, 0}, 		// A 
+	{0, 0}, 		// B 
+	{0, 0}, 		// C 
+	{9, 18}, 		// D 
+	{8, 36}, 		// E 
+	{0, 0}, 		// F 
+	{0, 0}, 		// G 
+	{9, 45}, 		// H 
+	{8, 63}, 		// I 
+	{0, 0}, 		// J 
+	{0, 0}, 		// K 
+	{0, 0}, 		// L 
+	{11, 72}, 		// M 
+	{0, 0}, 		// N 
+	{0, 0}, 		// O 
+	{0, 0}, 		// P 
+	{0, 0}, 		// Q 
+	{10, 90}, 		// R 
+	{7, 108}, 		// S 
+	{0, 0}, 		// T 
+	{9, 117}, 		// U 
+	{0, 0}, 		// V 
+	{0, 0}, 		// W 
+	{0, 0}, 		// X 
+	{10, 135}, 		// Y 
+};
+
+// Font information for Courier New 12pt
+const FONT_INFO courierNew_12ptFontInfo =
+{
+	2, //  Character height
+	'A', //  Start character
+	'Y', //  End character
+	2, //  Width, in pixels, of space character
+	courierNew_12ptDescriptors, //  Character descriptor array
+	courierNew_12ptBitmaps, //  Character bitmap array
+};
+
+// 
+//  Font data for Courier New 10pt
+// 
+
+// Character bitmaps for Courier New 10pt
+const uint8_t courierNew_10ptBitmaps2[] = 
+{
+	// @0 'A' (7 pixels wide)
+	0x30, //   ##   
+	0x10, //    #   
+	0x28, //   # #  
+	0x28, //   # #  
+	0x28, //   # #  
+	0x38, //   ###  
+	0x44, //  #   # 
+	0xEE, // ### ###
+
+	// @8 'B' (6 pixels wide)
+	0xF8, // ##### 
+	0x44, //  #   #
+	0x44, //  #   #
+	0x78, //  #### 
+	0x44, //  #   #
+	0x44, //  #   #
+	0x44, //  #   #
+	0xF8, // ##### 
+
+	// @16 'E' (6 pixels wide)
+	0xFC, // ######
+	0x44, //  #   #
+	0x50, //  # #  
+	0x70, //  ###  
+	0x50, //  # #  
+	0x40, //  #    
+	0x44, //  #   #
+	0xFC, // ######
+
+	// @24 'N' (8 pixels wide)
+	0xE7, // ###  ###
+	0x62, //  ##   # 
+	0x52, //  # #  # 
+	0x52, //  # #  # 
+	0x4A, //  #  # # 
+	0x4A, //  #  # # 
+	0x46, //  #   ## 
+	0xE6, // ###  ## 
+
+	// @32 'O' (7 pixels wide)
+	0x38, //   ###  
+	0x44, //  #   # 
+	0x82, // #     #
+	0x82, // #     #
+	0x82, // #     #
+	0x82, // #     #
+	0x44, //  #   # 
+	0x38, //   ###  
+
+	// @40 'P' (6 pixels wide)
+	0xF8, // ##### 
+	0x44, //  #   #
+	0x44, //  #   #
+	0x44, //  #   #
+	0x78, //  #### 
+	0x40, //  #    
+	0x40, //  #    
+	0xE0, // ###   
+
+	// @48 'R' (7 pixels wide)
+	0xF8, // #####  
+	0x44, //  #   # 
+	0x44, //  #   # 
+	0x44, //  #   # 
+	0x78, //  ####  
+	0x48, //  #  #  
+	0x44, //  #   # 
+	0xE2, // ###   #
+
+	// @56 'S' (6 pixels wide)
+	0x74, //  ### #
+	0x8C, // #   ##
+	0x80, // #     
+	0x78, //  #### 
+	0x04, //      #
+	0x04, //      #
+	0xC4, // ##   #
+	0xB8, // # ### 
+
+	// @64 'T' (7 pixels wide)
+	0xFE, // #######
+	0x92, // #  #  #
+	0x10, //    #   
+	0x10, //    #   
+	0x10, //    #   
+	0x10, //    #   
+	0x10, //    #   
+	0x38, //   ###  
+
+	// @72 'U' (7 pixels wide)
+	0xEE, // ### ###
+	0x44, //  #   # 
+	0x44, //  #   # 
+	0x44, //  #   # 
+	0x44, //  #   # 
+	0x44, //  #   # 
+	0x44, //  #   # 
+	0x38, //   ###  
+
+	// @80 'Y' (7 pixels wide)
+	0xEE, // ### ###
+	0x44, //  #   # 
+	0x28, //   # #  
+	0x28, //   # #  
+	0x10, //    #   
+	0x10, //    #   
+	0x10, //    #   
+	0x38, //   ###  
+};
+
+// Character descriptors for Courier New 10pt
+// { [Char width in bits], [Offset into courierNew_10ptCharBitmaps in bytes] }
+const FONT_CHAR_INFO courierNew_10ptDescriptors2[] = 
+{
+	{7, 0}, 		// A 
+	{6, 8}, 		// B 
+	{0, 0}, 		// C 
+	{0, 0}, 		// D 
+	{6, 16}, 		// E 
+	{0, 0}, 		// F 
+	{0, 0}, 		// G 
+	{0, 0}, 		// H 
+	{0, 0}, 		// I 
+	{0, 0}, 		// J 
+	{0, 0}, 		// K 
+	{0, 0}, 		// L 
+	{0, 0}, 		// M 
+	{8, 24}, 		// N 
+	{7, 32}, 		// O 
+	{6, 40}, 		// P 
+	{0, 0}, 		// Q 
+	{7, 48}, 		// R 
+	{6, 56}, 		// S 
+	{7, 64}, 		// T 
+	{7, 72}, 		// U 
+	{0, 0}, 		// V 
+	{0, 0}, 		// W 
+	{0, 0}, 		// X 
+	{7, 80}, 		// Y 
+};
+
+// Font information for Courier New 10pt
+const FONT_INFO courierNew_10ptFontInfo2 =
+{
+	1, //  Character height
+	'A', //  Start character
+	'Y', //  End character
+	2, //  Width, in pixels, of space character
+	courierNew_10ptDescriptors2, //  Character descriptor array
+	courierNew_10ptBitmaps2, //  Character bitmap array
+};
+
