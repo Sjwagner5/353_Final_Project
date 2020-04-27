@@ -196,7 +196,7 @@ void title_screen(void){
 	int length;
 	int i;
 	int j;
-	char welcome[] = "WELCOME TO FRUIT NINJA";
+	char welcome[] = "WELCOME TO FRUIT ASSASSIN";
 	
 	// Title Screen Menu
 	lcd_clear_screen(LCD_COLOR_BLACK);
@@ -212,16 +212,28 @@ void title_screen(void){
 	//turn on the first 3 LEDs to show that there are 3 lives left
 	io_expander_write_reg(MCP23017_GPIOA_R, 0x07);
 	
-	j = 0;
+	j = 20;
 	length = strlen(welcome);
 	for (i = 0; i < length; i++) {
 		offset = welcome[i] - 'A';
 		bitmapOff = vinerHandITC_14ptDescriptors[offset].offset;
 		width = vinerHandITC_14ptDescriptors[offset].widthBits;
-		lcd_draw_image(10 + j, width, ROWS/2, 10, &vinerHandITC_14ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+		if(i < 11){
+			lcd_draw_image(15 + j, width, ROWS/5, 15, &vinerHandITC_14ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+			if(i + 1 == 11)
+				j = 45;
+		}
+		else if(i < 17){
+			lcd_draw_image(15 + j, width, ROWS/3.75, 15, &vinerHandITC_14ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+			if(i + 1 == 17)
+				j = 20;
+		}
+		else {
+			lcd_draw_image(15 + j, width, ROWS/3, 15, &vinerHandITC_14ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+		}
 		j = 20 + j;
 	}
-	//for (i = 0; i < 1000000000; i++) {}
+	for (i = 0; i < 1000000000; i++) {}
 
 	// Game Settings
 	//TODO: add main menu to choose easy or medium or hard (select with joystick)
