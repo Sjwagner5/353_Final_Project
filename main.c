@@ -41,7 +41,10 @@ volatile bool BANANA_PRESENT = false;
 volatile bool ORANGE_PRESENT = false;
 
 static const uint16_t START_STATE = 0xACE7u;
-static int score = 0;
+
+static int score = 0;//this will store the current user's score (number of fruit destroyed)
+static int numLives = 3;//this will store the number of lives the user has left. This will be displayed with the red LEDs at the top of the board
+
 volatile int pixel_inc = 1;//this will determine how many pixels the fruit move at a time (1 for easy level, 2 for medium level, 3 for hard level)
 //*****************************************************************************
 //*****************************************************************************
@@ -79,6 +82,10 @@ uint16_t generate_random_x(uint8_t image_width)
 		}
     return lfsr;
 }
+
+//*****************************************************************************
+// Draw the banana graphic on the screen and move it when needs to be moved
+//*****************************************************************************
 void draw_banana(void) {
 	if (!BANANA_PRESENT) {
 		BANANA_X_COORD = generate_random_x(bananaWidthPixels);
@@ -91,6 +98,9 @@ void draw_banana(void) {
 	lcd_draw_image(BANANA_X_COORD, bananaWidthPixels, BANANA_Y_COORD, bananaHeightPixels, bananaBitmaps, LCD_COLOR_YELLOW, LCD_COLOR_BLACK);
 }
 
+//*****************************************************************************
+// Draw the apple graphic on the screen and move it when needs to be moved
+//*****************************************************************************
 void draw_apple(void) {
 	if (!APPLE_PRESENT) {
 		APPLE_X_COORD = generate_random_x(appleWidthPixels);
@@ -102,6 +112,9 @@ void draw_apple(void) {
 	lcd_draw_image(APPLE_X_COORD, appleWidthPixels, APPLE_Y_COORD, appleHeightPixels, appleBitmaps, LCD_COLOR_RED, LCD_COLOR_BLACK);
 }
 
+//*****************************************************************************
+// Draw the orange graphic on the screen and move it when needs to be moved
+//*****************************************************************************
 void draw_orange(void) {
 	if (!ORANGE_PRESENT) {
 		ORANGE_X_COORD = generate_random_x(orangeWidthPixels);
@@ -113,7 +126,9 @@ void draw_orange(void) {
 	lcd_draw_image(ORANGE_X_COORD, orangeWidthPixels, ORANGE_Y_COORD, orangeHeightPixels, orangeBitmaps, LCD_COLOR_BLACK, LCD_COLOR_ORANGE);
 }
 
-//Replace each fruit with an explosion when they are touched
+//*****************************************************************************
+// Replace the fruit graphic with the explosion graphic when they are touched
+//*****************************************************************************
 void explode_fruit(uint16_t xCoord, uint16_t yCoord) {
 	int i = 0;
 	
@@ -132,6 +147,23 @@ void explode_fruit(uint16_t xCoord, uint16_t yCoord) {
 	//clear the explosion graphic
 }
 
+//*****************************************************************************
+// Turn on the LEDs based on how many lives are left and restart the game when
+// a user loses a life
+//*****************************************************************************
+void life_lost(void) {
+	io_expander_write_reg(MCP23017_GPIOA_R, 0xFF>>(8-numLives));
+	lcd_clear_screen(LCD_COLOR_BLACK);//clear the screen of all fruit
+	
+	//set these to false so that the program redraws fruits in a random position at the top of the screen
+	APPLE_PRESENT = false;
+	BANANA_PRESENT = false;
+	ORANGE_PRESENT = false;
+}
+
+//*****************************************************************************
+// Check if the most recent touch event is on top of 1 of the fruits
+//*****************************************************************************
 void check_touch(void) {
 	int xTouch = ft6x06_read_x();
 	int yTouch = ft6x06_read_y();
@@ -168,6 +200,9 @@ void check_touch(void) {
 	}
 }
 
+//*********************************
+// The main game driver function
+//*********************************
 void game_main(void) {
 	char lastKey;
 	bool gameOver = false;
@@ -177,6 +212,10 @@ void game_main(void) {
 	//if easy: set pixel_inc to 1, if medium: set pixel_inc to 2, if hard: set pixel_inc to 3
 	//add functionality to start game on any push button press
 	pixel_inc = 1;
+	
+	//turn on the first 3 LEDs to show that there are 3 lives left
+	io_expander_write_reg(MCP23017_GPIOA_R, 0x07);
+	
 	//main game loop
 	while (!gameOver) {
 		// UART0: Pause and resume when space bar is hit. 
@@ -204,8 +243,15 @@ void game_main(void) {
 		if (ft6x06_read_td_status() == 1 || ft6x06_read_td_status() == 2) {
 			check_touch();
 		}
-		gameOver = ((APPLE_Y_COORD + (appleHeightPixels/2)) >= ROWS) || ((BANANA_Y_COORD + (bananaHeightPixels/2)) >= ROWS) || ((ORANGE_Y_COORD + (orangeHeightPixels/2)) >= ROWS);
-		//if any of the fruits reach the bottom of the screen, the game is over
+		
+		//if any of the fruits reach the bottom of the screen, the user loses a life  
+		if (((APPLE_Y_COORD + (appleHeightPixels/2)) >= ROWS) || ((BANANA_Y_COORD + (bananaHeightPixels/2)) >= ROWS) || ((ORANGE_Y_COORD + (orangeHeightPixels/2)) >= ROWS)) {
+			numLives--;
+			life_lost();//lose a life for the user and restart the game
+		}
+		if (numLives == 0) {//once the user reaches 0 lives left, the game is over
+			gameOver = true;
+		}
 	}
 	lcd_clear_screen(LCD_COLOR_BLACK);
 	//TODO: add game over screen and show final score
