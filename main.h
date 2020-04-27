@@ -37,8 +37,25 @@
 #include "io_expander.h"
 #include "eeprom.h"
 #include "ft6x06.h"
-
+#include "images.h"
 #include "project_interrupts.h"
 #include "project_hardware_init.h"
+
+extern volatile uint16_t APPLE_X_COORD;
+extern volatile uint16_t APPLE_Y_COORD;
+extern volatile uint16_t BANANA_X_COORD;
+extern volatile uint16_t BANANA_Y_COORD;
+extern volatile uint16_t APPLE_X_COORD;
+extern volatile uint16_t APPLE_Y_COORD;
+extern volatile uint16_t ORANGE_X_COORD;
+extern volatile uint16_t ORANGE_Y_COORD ;
+
+extern volatile bool ALERT_APPLE;
+extern volatile bool ALERT_BANANA;
+extern volatile bool ALERT_ORANGE;
+
+extern volatile bool APPLE_PRESENT;
+extern volatile bool BANANA_PRESENT;
+extern volatile bool ORANGE_PRESENT;
 
 #endif

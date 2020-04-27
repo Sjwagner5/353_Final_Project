@@ -23,19 +23,42 @@
 #include "main.h"
 #include "project_interrupts.h"
 
+
+
 //Timer 1 ISR that blinks the red LED to indicate that the program is running
 void TIMER1A_Handler(void) {
-	int i;
-	lp_io_set_pin(RED_M);
-	for (i = 0; i < 100000; i++) {}
-	lp_io_clear_pin(RED_M);
+	static int i = 0;
+	if (i%2 == 0) {//alternate between turning the LED on and off each time there is a TIMER 1 interrupt
+		lp_io_set_pin(RED_M);
+	} else {
+		lp_io_clear_pin(RED_M);
+	}
+	i++;
 	TIMER1->ICR |= TIMER_ICR_TATOCINT;
 }
 
-//Timer 4 ISR will check the ADC every 10 ms
-void TIMER4A_Handler(void) {
-	
+//Timer 2 ISR will move the apple
+void TIMER2A_Handler(void) {
+	ALERT_APPLE = true;
+	TIMER2->ICR |= TIMER_ICR_TATOCINT;
+	return;
 }
 
+//Timer 3 ISR will move the banana
+void TIMER3A_Handler(void) {
+	ALERT_BANANA = true;
+	TIMER3->ICR |= TIMER_ICR_TATOCINT;
+	return;
+}
 
+//Timer 4 ISR will check the ADC value
+void TIMER4A_Handler(void) {
+	return;
+}
 
+//Timer 5 ISR will move the orange
+void TIMER5A_Handler(void) {
+	ALERT_ORANGE = true;
+	TIMER5->ICR |= TIMER_ICR_TATOCINT;
+	return;
+}
