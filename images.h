@@ -47,10 +47,11 @@ extern const uint8_t orangeBitmaps[];
 extern const uint8_t orangeWidthPixels;
 extern const uint8_t orangeHeightPixels;
 
-/* Font data for Microsoft Sans Serif 8pt */
-extern const uint8_t microsoftSansSerif_8ptBitmaps[];
-extern const FONT_INFO microsoftSansSerif_8ptFontInfo;
-extern const FONT_CHAR_INFO microsoftSansSerif_8ptDescriptors[];
+// Font data for Viner Hand ITC 14pt
+extern const uint8_t vinerHandITC_14ptBitmaps[];
+extern const FONT_INFO vinerHandITC_14ptFontInfo;
+extern const FONT_CHAR_INFO vinerHandITC_14ptDescriptors[];
+
 
 // Bitmap info for explosion
 extern const uint8_t explosionBitmaps [];
