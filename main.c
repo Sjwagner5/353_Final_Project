@@ -197,6 +197,9 @@ void title_screen(void){
 	int i;
 	int j;
 	char welcome[] = "WELCOME TO FRUIT ASSASSIN";
+	char joystick[] = "USE JOYSTICK TO SELECT LEVEL";
+	char difficulty[] = "EASY MEDIUM HARD";
+	char button[] = "PUSH ANY BUTTON TO START";
 	
 	// Title Screen Menu
 	lcd_clear_screen(LCD_COLOR_BLACK);
@@ -232,6 +235,29 @@ void title_screen(void){
 			lcd_draw_image(15 + j, width, ROWS/3, 15, &vinerHandITC_14ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
 		}
 		j = 20 + j;
+	}
+	
+	j = 0;
+	length = strlen(joystick);
+	for (i = 0; i < length; i++) {
+		offset = joystick[i] - 'C';
+		bitmapOff = courierNew_10ptDescriptors[offset].offset;
+		width = courierNew_10ptDescriptors[offset].widthBits;
+		if(i < 12){
+			lcd_draw_image(10 + j, width, ROWS/2.25, 8, &courierNew_10ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+			if(i + 1 == 12)
+					j = 0;
+		}
+		else if(i < 17){
+			lcd_draw_image(10 + j, width, ROWS/2, 8, &courierNew_10ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+			if(i + 1 == 17)
+					j = 0;
+		}
+		else {
+			lcd_draw_image(10 + j, width, ROWS/1.75, 8, &courierNew_10ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+		}	
+		
+		j = 10 + j;
 	}
 	for (i = 0; i < 1000000000; i++) {}
 
