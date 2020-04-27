@@ -34,6 +34,8 @@ void init_hardware(void) {
 	lp_io_init();
 	ft6x06_init();
 	eeprom_init();
+	io_expander_init();
+	io_expander_write_reg(MCP23017_IODIRA_R, 0x00); //configure the pins for LEDs on the IO Expander to be outputs
 	
 	gp_timer_config_32(TIMER1_BASE, TIMER_TAMR_TAMR_PERIOD, 50000000, false, true);
 	gp_timer_config_32(TIMER2_BASE, TIMER_TAMR_TAMR_PERIOD, 500000, false, true);
