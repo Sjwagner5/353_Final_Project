@@ -216,9 +216,9 @@ void title_screen(void){
 	length = strlen(welcome);
 	for (i = 0; i < length; i++) {
 		offset = welcome[i] - 'A';
-		bitmapOff = microsoftSansSerif_8ptDescriptors[offset].offset;
-		width = microsoftSansSerif_8ptDescriptors[offset].widthBits;
-		lcd_draw_image(10 + j, width, ROWS/2, 10, &microsoftSansSerif_8ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+		bitmapOff = vinerHandITC_14ptDescriptors[offset].offset;
+		width = vinerHandITC_14ptDescriptors[offset].widthBits;
+		lcd_draw_image(10 + j, width, ROWS/2, 10, &vinerHandITC_14ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
 		j = 20 + j;
 	}
 	//for (i = 0; i < 1000000000; i++) {}
@@ -309,3 +309,4 @@ main(void)
 		game_main();
     while(1){};
 }
+

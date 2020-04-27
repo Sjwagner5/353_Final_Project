@@ -259,6 +259,9 @@ const uint8_t appleBitmaps[] =
 	0x00, 0x1F, 0x00, 0x7C, 0x00, 0x00, //            #####         #####           
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //                                          
 };
+/* Bitmap sizes for apple */
+const uint8_t appleWidthPixels = 41;
+const uint8_t appleHeightPixels = 55;
 
 // 
 //  Font data for Viner Hand ITC 14pt
