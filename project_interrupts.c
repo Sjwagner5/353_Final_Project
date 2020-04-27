@@ -29,9 +29,9 @@
 void TIMER1A_Handler(void) {
 	static int i = 0;
 	if (i%2 == 0) {//alternate between turning the LED on and off each time there is a TIMER 1 interrupt
-		lp_io_set_pin(RED_M);
+		lp_io_set_pin(RED_BIT);
 	} else {
-		lp_io_clear_pin(RED_M);
+		lp_io_clear_pin(RED_BIT);
 	}
 	i++;
 	TIMER1->ICR |= TIMER_ICR_TATOCINT;
