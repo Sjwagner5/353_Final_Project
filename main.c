@@ -42,6 +42,7 @@ volatile bool ORANGE_PRESENT = false;
 
 static const uint16_t START_STATE = 0xACE7u;
 static int score = 0;
+static uint8_t highscore = 0;
 volatile int pixel_inc = 1;//this will determine how many pixels the fruit move at a time (1 for easy level, 2 for medium level, 3 for hard level)
 //*****************************************************************************
 //*****************************************************************************
@@ -168,15 +169,52 @@ void check_touch(void) {
 	}
 }
 
+void title_screen(void){
+	// Title Screen Menu
+	lcd_clear_screen(LCD_COLOR_BLACK);
+	printf("TITLE SCREEN\n");
+	//eeprom_byte_write(I2C1_BASE, HS_ADDR, highscore); // Un-comment this to initalize EEPROM to 0 at address HS_ADDR
+	
+	
+	// Load Highscore
+	eeprom_byte_read(I2C1_BASE, HS_ADDR, &highscore);
+	printf("Highscore Loaded: %d\n", highscore);
+	printf("Score: %d\n", score);
+	printf("Highschool: %d\n", highscore);
+	
+	// Game Settings
+	pixel_inc = 1;
+}
+
+void end_screen(bool newHighScore){
+	// End Screen Menu
+	lcd_clear_screen(LCD_COLOR_BLACK);
+	
+	// Store New Highscore
+	if(newHighScore){
+		highscore = score;
+		eeprom_byte_write(I2C1_BASE, HS_ADDR, highscore);
+		printf("Highscore Stored: %d\n", highscore);
+	}
+	printf("Score: %d\n", score);
+	printf("Highschool: %d\n", highscore);
+	
+	
+	
+	printf("END SCREEN\n\n\n");
+}
+
 void game_main(void) {
 	char lastKey;
 	bool gameOver = false;
-	printf("Running...");
+	printf("Running...\n");
 	
 	//TODO: add main menu to choose easy or medium or hard (select with joystick)
 	//if easy: set pixel_inc to 1, if medium: set pixel_inc to 2, if hard: set pixel_inc to 3
 	//add functionality to start game on any push button press
-	pixel_inc = 1;
+	
+	title_screen();
+	
 	//main game loop
 	while (!gameOver) {
 		// UART0: Pause and resume when space bar is hit. 
@@ -207,8 +245,10 @@ void game_main(void) {
 		gameOver = ((APPLE_Y_COORD + (appleHeightPixels/2)) >= ROWS) || ((BANANA_Y_COORD + (bananaHeightPixels/2)) >= ROWS) || ((ORANGE_Y_COORD + (orangeHeightPixels/2)) >= ROWS);
 		//if any of the fruits reach the bottom of the screen, the game is over
 	}
-	lcd_clear_screen(LCD_COLOR_BLACK);
+	
 	//TODO: add game over screen and show final score
+	end_screen(score > highscore);
+	
 	
 	//TODO: also need to add use of LED's and high score with eeprom
 }

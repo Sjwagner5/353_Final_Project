@@ -41,6 +41,8 @@
 #include "project_interrupts.h"
 #include "project_hardware_init.h"
 
+#define HS_ADDR    255
+
 extern volatile uint16_t APPLE_X_COORD;
 extern volatile uint16_t APPLE_Y_COORD;
 extern volatile uint16_t BANANA_X_COORD;
