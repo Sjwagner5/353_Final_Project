@@ -60,4 +60,12 @@ extern volatile bool APPLE_PRESENT;
 extern volatile bool BANANA_PRESENT;
 extern volatile bool ORANGE_PRESENT;
 
+typedef enum{
+  PS2_DIR_UP,
+  PS2_DIR_DOWN,
+  PS2_DIR_CENTER
+} PS2_DIR_t;
+
+extern volatile PS2_DIR_t PS2_DIR;
+
 #endif

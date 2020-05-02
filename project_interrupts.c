@@ -84,7 +84,7 @@ void TIMER4A_Handler(void)
 //*****************************************************************************
 void ADC0SS2_Handler(void)
 {
-	PS2_X_DATA = ADC0->SSFIFO2;
+	PS2_X_DATA = ADC0->SSFIFO2;//Read the x value to get the first value in the fifo out of the way, we will not use it
 	PS2_Y_DATA = ADC0->SSFIFO2;
 	PS2_DIR =  ps2_get_direction();
   // Clear the interrupt
