@@ -965,8 +965,18 @@ const uint8_t courierNew_10ptBitmaps2[] =
 	0x40, //  #    
 	0x44, //  #   #
 	0xFC, // ######
+	
+	// @24 'H' (7 pixels wide)
+	0xEE, // ### ###
+	0x44, //  #   # 
+	0x44, //  #   # 
+	0x7C, //  ##### 
+	0x44, //  #   # 
+	0x44, //  #   # 
+	0x44, //  #   # 
+	0xEE, // ### ###
 
-	// @24 'N' (8 pixels wide)
+	// @32 'N' (8 pixels wide)
 	0xE7, // ###  ###
 	0x62, //  ##   # 
 	0x52, //  # #  # 
@@ -976,7 +986,7 @@ const uint8_t courierNew_10ptBitmaps2[] =
 	0x46, //  #   ## 
 	0xE6, // ###  ## 
 
-	// @32 'O' (7 pixels wide)
+	// @40 'O' (7 pixels wide)
 	0x38, //   ###  
 	0x44, //  #   # 
 	0x82, // #     #
@@ -986,7 +996,7 @@ const uint8_t courierNew_10ptBitmaps2[] =
 	0x44, //  #   # 
 	0x38, //   ###  
 
-	// @40 'P' (6 pixels wide)
+	// @48 'P' (6 pixels wide)
 	0xF8, // ##### 
 	0x44, //  #   #
 	0x44, //  #   #
@@ -996,7 +1006,7 @@ const uint8_t courierNew_10ptBitmaps2[] =
 	0x40, //  #    
 	0xE0, // ###   
 
-	// @48 'R' (7 pixels wide)
+	// @56 'R' (7 pixels wide)
 	0xF8, // #####  
 	0x44, //  #   # 
 	0x44, //  #   # 
@@ -1006,7 +1016,7 @@ const uint8_t courierNew_10ptBitmaps2[] =
 	0x44, //  #   # 
 	0xE2, // ###   #
 
-	// @56 'S' (6 pixels wide)
+	// @64 'S' (6 pixels wide)
 	0x74, //  ### #
 	0x8C, // #   ##
 	0x80, // #     
@@ -1016,7 +1026,7 @@ const uint8_t courierNew_10ptBitmaps2[] =
 	0xC4, // ##   #
 	0xB8, // # ### 
 
-	// @64 'T' (7 pixels wide)
+	// @72 'T' (7 pixels wide)
 	0xFE, // #######
 	0x92, // #  #  #
 	0x10, //    #   
@@ -1026,7 +1036,7 @@ const uint8_t courierNew_10ptBitmaps2[] =
 	0x10, //    #   
 	0x38, //   ###  
 
-	// @72 'U' (7 pixels wide)
+	// @80 'U' (7 pixels wide)
 	0xEE, // ### ###
 	0x44, //  #   # 
 	0x44, //  #   # 
@@ -1036,7 +1046,7 @@ const uint8_t courierNew_10ptBitmaps2[] =
 	0x44, //  #   # 
 	0x38, //   ###  
 
-	// @80 'Y' (7 pixels wide)
+	// @88 'Y' (7 pixels wide)
 	0xEE, // ### ###
 	0x44, //  #   # 
 	0x28, //   # #  
@@ -1058,24 +1068,24 @@ const FONT_CHAR_INFO courierNew_10ptDescriptors2[] =
 	{6, 16}, 		// E 
 	{0, 0}, 		// F 
 	{0, 0}, 		// G 
-	{0, 0}, 		// H 
+	{7, 24}, 		// H 
 	{0, 0}, 		// I 
 	{0, 0}, 		// J 
 	{0, 0}, 		// K 
 	{0, 0}, 		// L 
 	{0, 0}, 		// M 
-	{8, 24}, 		// N 
-	{7, 32}, 		// O 
-	{6, 40}, 		// P 
+	{8, 32}, 		// N 
+	{7, 40}, 		// O 
+	{6, 48}, 		// P 
 	{0, 0}, 		// Q 
-	{7, 48}, 		// R 
-	{6, 56}, 		// S 
-	{7, 64}, 		// T 
-	{7, 72}, 		// U 
+	{7, 56}, 		// R 
+	{6, 64}, 		// S 
+	{7, 72}, 		// T 
+	{7, 80}, 		// U 
 	{0, 0}, 		// V 
 	{0, 0}, 		// W 
 	{0, 0}, 		// X 
-	{7, 80}, 		// Y 
+	{7, 88}, 		// Y 
 };
 
 // Font information for Courier New 10pt

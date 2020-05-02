@@ -198,13 +198,14 @@ void title_screen(void){
 	int j;
 	char welcome[] = "WELCOME TO FRUIT ASSASSIN";
 	char joystick[] = "USE JOYSTICK TO SELECT LEVEL";
-	char difficulty[] = "EASY MEDIUM HARD";
-	char button[] = "PUSH ANY BUTTON TO START";
+	char difficulty[] = "EASY MED HARD";
+	char button[] = "PUSH TO START";
 	
 	// Title Screen Menu
 	lcd_clear_screen(LCD_COLOR_BLACK);
 	printf("TITLE SCREEN\n");
-	//eeprom_byte_write(I2C1_BASE, HS_ADDR, highscore); // Un-comment this to initalize EEPROM to 0 at address HS_ADDR
+	
+	//eeprom_byte_write(I2C1_BASE, HS_ADDR, highscore); // Toggle this comment to initalize EEPROM to 0 at address HS_ADDR
 
 	// Load Highscore
 	eeprom_byte_read(I2C1_BASE, HS_ADDR, &highscore);
@@ -215,6 +216,7 @@ void title_screen(void){
 	//turn on the first 3 LEDs to show that there are 3 lives left
 	io_expander_write_reg(MCP23017_GPIOA_R, 0x07);
 	
+	// Display Welcome Text
 	j = 20;
 	length = strlen(welcome);
 	for (i = 0; i < length; i++) {
@@ -237,6 +239,7 @@ void title_screen(void){
 		j = 20 + j;
 	}
 	
+	// Display Joystick Text
 	j = 0;
 	length = strlen(joystick);
 	for (i = 0; i < length; i++) {
@@ -246,19 +249,72 @@ void title_screen(void){
 		if(i < 12){
 			lcd_draw_image(10 + j, width, ROWS/2.25, 8, &courierNew_10ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
 			if(i + 1 == 12)
-					j = 0;
+					j = -20;
 		}
-		else if(i < 17){
+		else if(i < 22){
 			lcd_draw_image(10 + j, width, ROWS/2, 8, &courierNew_10ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
-			if(i + 1 == 17)
-					j = 0;
+			if(i + 1 == 22)
+					j = -20;
 		}
 		else {
-			lcd_draw_image(10 + j, width, ROWS/1.75, 8, &courierNew_10ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+			lcd_draw_image(10 + j, width, ROWS/1.8, 8, &courierNew_10ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
 		}	
 		
 		j = 10 + j;
 	}
+	
+	// Display Difficulty Text
+	j = COLS/2 + 25;
+	length = strlen(difficulty);
+	for (i = 0; i < length; i++) {
+		offset = difficulty[i] - 'A';
+		bitmapOff = courierNew_12ptDescriptors[offset].offset;
+		width = courierNew_12ptDescriptors[offset].widthBits;
+		if(i <= 4){
+			lcd_draw_image(width + j, width, ROWS/2.25, 9, &courierNew_12ptBitmaps[bitmapOff], LCD_COLOR_GREEN, LCD_COLOR_BLACK);
+			if(i == 4)
+					j = COLS/2 + 8;
+		}
+		else if(i < 9){
+			lcd_draw_image(width + j, width, ROWS/1.9, 9, &courierNew_12ptBitmaps[bitmapOff], LCD_COLOR_YELLOW, LCD_COLOR_BLACK);
+			if(i == 8)
+					j = COLS/2 + 10;
+		}
+		else {
+			lcd_draw_image(width + j, width, ROWS/1.65, 9, &courierNew_12ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+		}	
+		
+		j = 15 + j;
+	}
+	
+	// Display Button Text	
+	j = 20;
+	length = strlen(button);
+	for (i = 0; i < length; i++) {
+		offset = button[i] - 'A';
+		bitmapOff = courierNew_10ptDescriptors2[offset].offset;
+		width = courierNew_10ptDescriptors2[offset].widthBits;
+		lcd_draw_image(width + j, width, ROWS - 40, 8, &courierNew_10ptBitmaps2[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+		j = 10 + j;
+	}
+	
+	// Cornucopia
+  ORANGE_X_COORD = orangeWidthPixels/2;
+	ORANGE_Y_COORD = orangeHeightPixels/2;
+	lcd_draw_image(ORANGE_X_COORD, orangeWidthPixels, ORANGE_Y_COORD, orangeHeightPixels, orangeBitmaps, LCD_COLOR_BLACK, LCD_COLOR_ORANGE);
+
+	
+  BANANA_X_COORD = bananaWidthPixels/2;
+	BANANA_Y_COORD = COLS - 35 + bananaHeightPixels/2;
+	lcd_draw_image(BANANA_X_COORD, bananaWidthPixels, BANANA_Y_COORD, bananaHeightPixels, bananaBitmaps, LCD_COLOR_YELLOW, LCD_COLOR_BLACK);
+	
+	
+  APPLE_X_COORD = ROWS/2 + appleWidthPixels/2;
+	APPLE_Y_COORD = COLS + appleHeightPixels/2;
+	lcd_draw_image(APPLE_X_COORD, appleWidthPixels, APPLE_Y_COORD, appleHeightPixels, appleBitmaps, LCD_COLOR_RED, LCD_COLOR_BLACK);
+	
+	lcd_draw_rectangle(ROWS/2 + 45, 100, COLS/2, 200, LCD_COLOR_BLACK);
+	
 	for (i = 0; i < 1000000000; i++) {}
 
 	// Game Settings
