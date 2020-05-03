@@ -26,5 +26,5 @@
 
 void initializeBoard(void);
 void init_hardware(void);
-
+void config_buttons(void);
 #endif

@@ -49,6 +49,8 @@ volatile int pixel_inc = 1;//this will determine how many pixels the fruit move 
 
 volatile PS2_DIR_t PS2_DIR = PS2_DIR_CENTER;//the current direction of the joystick
 
+volatile bool ALERT_BUTTON;//alert when a button gets pressed
+
 //*****************************************************************************
 //*****************************************************************************
 void DisableInterrupts(void)
@@ -204,22 +206,22 @@ void title_screen(int diff){
 	char difficulty[] = "EASY MED HARD";
 	char button[] = "PUSH TO START";
 	uint16_t gfg, gbg, yfg, ybg, rfg, rbg;
-	
+
 	// Title Screen Menu
 	//lcd_clear_screen(LCD_COLOR_BLACK);
 	printf("TITLE SCREEN\n");
-	
+
 	//eeprom_byte_write(I2C1_BASE, HS_ADDR, highscore); // Toggle this comment to initalize EEPROM to 0 at address HS_ADDR
 
 	// Load Highscore
 	eeprom_byte_read(I2C1_BASE, HS_ADDR, &highscore);
 	printf("Highscore Loaded: %d\n", highscore);
 	printf("Score: %d\n", score);
-	printf("Highschool: %d\n", highscore);
-	
+	printf("Highscore: %d\n", highscore);
+
 	//turn on the first 3 LEDs to show that there are 3 lives left
 	io_expander_write_reg(MCP23017_GPIOA_R, 0x07);
-	
+
 	// Display Welcome Text
 	j = 20;
 	length = strlen(welcome);
@@ -242,7 +244,7 @@ void title_screen(int diff){
 		}
 		j = 20 + j;
 	}
-	
+
 	// Display Joystick Text
 	j = 0;
 	length = strlen(joystick);
@@ -262,30 +264,30 @@ void title_screen(int diff){
 		}
 		else {
 			lcd_draw_image(10 + j, width, ROWS/1.8, 8, &courierNew_10ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
-		}	
-		
+		}
+
 		j = 10 + j;
 	}
-	
+
 	gfg = LCD_COLOR_GREEN;  gbg = LCD_COLOR_BLACK;
 	yfg = LCD_COLOR_YELLOW; ybg = LCD_COLOR_BLACK;
 	rfg = LCD_COLOR_RED;    rbg = LCD_COLOR_BLACK;
 	switch(diff){
-		case 0: 
+		case 0:
 			gfg = LCD_COLOR_GRAY;
 		  gbg = LCD_COLOR_GREEN;
 		break;
-		case 1: 
+		case 1:
 			yfg = LCD_COLOR_GRAY;
 		  ybg = LCD_COLOR_YELLOW;
 		break;
-	  case 2: 
+	  case 2:
 			rfg = LCD_COLOR_GRAY;
 		  rbg = LCD_COLOR_RED;
 		break;
-		
+
 	}
-	
+
 	// Display Difficulty Text
 	j = COLS/2 + 25;
 	length = strlen(difficulty);
@@ -305,12 +307,12 @@ void title_screen(int diff){
 		}
 		else {
 			lcd_draw_image(width + j, width, ROWS/1.65, 9, &courierNew_12ptBitmaps[bitmapOff], rfg, rbg);
-		}	
-		
+		}
+
 		j = 15 + j;
 	}
-	
-	// Display Button Text	
+
+	// Display Button Text
 	j = 20;
 	length = strlen(button);
 	for (i = 0; i < length; i++) {
@@ -320,25 +322,25 @@ void title_screen(int diff){
 		lcd_draw_image(width + j, width, ROWS - 40, 8, &courierNew_10ptBitmaps2[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
 		j = 10 + j;
 	}
-	
+
 	// Cornucopia
   ORANGE_X_COORD = orangeWidthPixels/2;
 	ORANGE_Y_COORD = orangeHeightPixels/2;
 	lcd_draw_image(ORANGE_X_COORD, orangeWidthPixels, ORANGE_Y_COORD, orangeHeightPixels, orangeBitmaps, LCD_COLOR_BLACK, LCD_COLOR_ORANGE);
 
-	
+
   BANANA_X_COORD = bananaWidthPixels/2;
 	BANANA_Y_COORD = COLS - 35 + bananaHeightPixels/2;
 	lcd_draw_image(BANANA_X_COORD, bananaWidthPixels, BANANA_Y_COORD, bananaHeightPixels, bananaBitmaps, LCD_COLOR_YELLOW, LCD_COLOR_BLACK);
-	
-	
+
+
   APPLE_X_COORD = ROWS/2 + appleWidthPixels/2;
 	APPLE_Y_COORD = COLS + appleHeightPixels/2;
 	lcd_draw_image(APPLE_X_COORD, appleWidthPixels, APPLE_Y_COORD, appleHeightPixels, appleBitmaps, LCD_COLOR_RED, LCD_COLOR_BLACK);
-	
+
 	lcd_draw_rectangle(ROWS/2 + 45, 100, COLS/2, 200, LCD_COLOR_BLACK);
-	
-	
+
+
 
 	// Game Settings
 	//TODO: add main menu to choose easy or medium or hard (select with joystick)
@@ -371,19 +373,21 @@ void game_main(void) {
 
 	printf("Running...\n");
 	diff = 3000;
-  for (i = 0; i < 100; i++) {
-		PS2_DIR = ps2_get_direction();
-		if(PS2_DIR == PS2_DIR_UP){
-			diff -= 1;
+	//while(!ALERT_BUTTON) {
+		for (i = 0; i < 100; i++) {
+			if(PS2_DIR == PS2_DIR_UP){
+				diff -= 1;
+			}
+			else if(PS2_DIR == PS2_DIR_DOWN) {
+				diff += 1;
+			}
+
+			title_screen(diff % 3);
 		}
-		else if(PS2_DIR == PS2_DIR_DOWN) {
-			diff += 1;
-		}
-		
-		title_screen(diff % 3);
-	}
+		//ALERT_BUTTON = false;
+	//}
 	lcd_clear_screen(LCD_COLOR_BLACK);
-	
+
 	//main game loop
 	while (!gameOver) {
 		// UART0: Pause and resume when space bar is hit.
@@ -400,12 +404,15 @@ void game_main(void) {
 		}
 
 		if (ALERT_APPLE) {//draw or move the apple when the timer is up
+			ALERT_APPLE = false;
 			draw_apple();
 		}
 		if (ALERT_BANANA) {//draw or move the banana when the timer is up
+			ALERT_BANANA = false;
 			draw_banana();
 		}
 		if (ALERT_ORANGE) {//draw or move the orange when the timer is up
+			ALERT_ORANGE = false;
 			draw_orange();
 		}
 		if (ft6x06_read_td_status() == 1 || ft6x06_read_td_status() == 2) {
@@ -436,4 +443,3 @@ main(void)
 		game_main();
     while(1){};
 }
-

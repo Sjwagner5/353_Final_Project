@@ -12,8 +12,8 @@ typedef struct
 {
 	const uint8_t widthBits;					// width, in bits (or pixels), of the character
 	const uint16_t offset;					// offset of the character's bitmap, in bytes, into the the FONT_INFO's data array
-	
-} FONT_CHAR_INFO;	
+
+} FONT_CHAR_INFO;
 
 // Describes a single font
 typedef struct
@@ -24,8 +24,8 @@ typedef struct
 	const uint8_t			spacePixels;	// number of pixels that a space character takes up
 	const FONT_CHAR_INFO*	charInfo;		// pointer to array of char information
 	const uint8_t*			data;			// pointer to generated array of character visual representation
-		
-} FONT_INFO;	
+
+} FONT_INFO;
 
 // Bitmap info for banana
 extern const uint8_t bananaBitmaps[];
@@ -76,6 +76,24 @@ extern const FONT_CHAR_INFO courierNew_12ptDescriptors[];
 extern const uint8_t courierNew_10ptBitmaps2[];
 extern const FONT_INFO courierNew_10ptFontInfo2;
 extern const FONT_CHAR_INFO courierNew_10ptDescriptors2[];
+
+// Font data for Viner Hand ITC 14pt
+// Used for "GAME OVER"
+extern const uint8_t vinerHandITC_14ptBitmaps2[];
+extern const FONT_INFO vinerHandITC_14ptFontInfo2;
+extern const FONT_CHAR_INFO vinerHandITC_14ptDescriptors2[];
+
+// Font data for Courier New 12pt
+// Used for "SCORE:", "HIGHSCORE:", and "NEW HIGHSCORE!"
+extern const uint8_t courierNew_12ptBitmaps2[];
+extern const FONT_INFO courierNew_12ptFontInfo2;
+extern const FONT_CHAR_INFO courierNew_12ptDescriptors2[];
+
+// Font data for Courier New 12pt
+// Used for numbers printed on screen
+extern const uint8_t courierNew_12ptBitmaps3[];
+extern const FONT_INFO courierNew_12ptFontInfo3;
+extern const FONT_CHAR_INFO courierNew_12ptDescriptors3[];
 
 
 #endif

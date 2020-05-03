@@ -24,6 +24,67 @@
 
 #define	TEN_MS	500000 // this will be used to have Timer 4 interrupt every 10 ms	
 
+void config_buttons(void) {
+	 
+	gpio_enable_port(GPIOF_BASE);
+	gpio_config_enable_input(GPIOF_BASE, PF0);
+	gpio_config_digital_enable(GPIOF_BASE, PF0);
+	gpio_config_enable_pullup(GPIOF_BASE, PF0);
+	GPIOF->IS &= ~PF0;
+	GPIOF->ICR |= PF0;
+	GPIOF->IBE &= ~PF0;
+	GPIOF->IEV |= PF0;
+	GPIOF->IM |= PF0;
+	NVIC_SetPriority(gpio_get_irq_num(GPIOF_BASE), 1);
+	NVIC_EnableIRQ(gpio_get_irq_num(GPIOF_BASE));
+	
+	io_expander_write_reg(MCP23017_IODIRB_R, 0xFF); // configure pins for push buttons on IO expander to be inputs
+	io_expander_write_reg(MCP23017_GPPUB_R, 0xFF);// enable pull up registers in IO expander for 4 push buttons
+	
+	io_expander_write_reg(MCP23017_IPOLB_R, 0x00);
+	io_expander_write_reg(MCP23017_IOCONB_R, 0x0);
+	
+	//set up pins on IO expander for push pins to generate interrupts
+	io_expander_write_reg(MCP23017_GPINTENB_R, 0xFF);	
+	io_expander_write_reg(MCP23017_DEFVALB_R, 0xFF);
+	io_expander_write_reg(MCP23017_INTCONB_R, 0xFF);
+	
+//	
+//	GPIOF->IS &= ~IO_EXPANDER_IRQ_PIN_NUM;
+
+//  // Clear any outstanding interrupts on PF0
+//  GPIOF->ICR |= IO_EXPANDER_IRQ_PIN_NUM;
+
+//  // Interrupt is controlled by IEV
+//  GPIOF->IBE &= ~IO_EXPANDER_IRQ_PIN_NUM;
+
+//  // Set the interrupts as rising edge interrupts
+//  GPIOF->IEV |= IO_EXPANDER_IRQ_PIN_NUM;
+
+//  // Enable the Interrupt Mask for PF0
+//  GPIOF->IM |= IO_EXPANDER_IRQ_PIN_NUM;
+
+//  // Set the Priority
+//  NVIC_SetPriority(GPIOF_IRQn, 0);
+
+//  // Enable the Interrupt in the NVIC
+//  NVIC_EnableIRQ(GPIOF_IRQn);
+//	io_expander_write_reg(MCP23017_IODIRA_R, 0x00);		// Set leds to outputs
+//	io_expander_write_reg(MCP23017_GPPUA_R, 0x00);		// No pull-up on leds
+//	
+//	io_expander_write_reg(MCP23017_IODIRB_R, 0xFF);		// Set buttons to inputs
+//	io_expander_write_reg(MCP23017_GPPUB_R, 0xFF);		// Pull-up on buttons
+//	
+//	io_expander_write_reg(MCP23017_IPOLB_R, 0x00);
+//	// Initialize interrupts for buttons //
+//	io_expander_write_reg(MCP23017_IOCONB_R, 0x0);
+
+//	io_expander_write_reg(MCP23017_GPINTENB_R, 0xFF);	
+//	io_expander_write_reg(MCP23017_DEFVALB_R, 0xFF);
+//	io_expander_write_reg(MCP23017_INTCONB_R, 0xFF);
+
+}
+
 void init_hardware(void) {
 	init_serial_debug(true, true);
 	
@@ -36,11 +97,11 @@ void init_hardware(void) {
 	eeprom_init();
 	io_expander_init();
 	io_expander_write_reg(MCP23017_IODIRA_R, 0x00); //configure the pins for LEDs on the IO Expander to be outputs
-	
+	config_buttons();
 	gp_timer_config_32(TIMER1_BASE, TIMER_TAMR_TAMR_PERIOD, 50000000, false, true);
 	gp_timer_config_32(TIMER2_BASE, TIMER_TAMR_TAMR_PERIOD, 500000, false, true);
 	gp_timer_config_32(TIMER3_BASE, TIMER_TAMR_TAMR_PERIOD, 500000, false, true);
-	gp_timer_config_32(TIMER4_BASE, TIMER_TAMR_TAMR_PERIOD, 50000, false, true);
+	gp_timer_config_16(TIMER4_BASE, TIMER_TAMR_TAMR_PERIOD, 50000, false, true);
 	gp_timer_config_32(TIMER5_BASE, TIMER_TAMR_TAMR_PERIOD, 500000, false, true);
 }
 

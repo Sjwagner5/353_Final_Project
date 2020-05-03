@@ -68,4 +68,13 @@ typedef enum{
 
 extern volatile PS2_DIR_t PS2_DIR;
 
+typedef enum 
+{
+  DEBOUNCE_ONE,
+  DEBOUNCE_1ST_ZERO,
+  DEBOUNCE_2ND_ZERO,
+  DEBOUNCE_PRESSED
+} DEBOUNCE_STATES;
+
+extern volatile bool ALERT_BUTTON;
 #endif
