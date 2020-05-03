@@ -49,7 +49,7 @@ volatile int pixel_inc = 1;//this will determine how many pixels the fruit move 
 
 volatile PS2_DIR_t PS2_DIR = PS2_DIR_CENTER;//the current direction of the joystick
 
-volatile bool ALERT_BUTTON;//alert when a button gets pressed
+volatile bool ALERT_BUTTON = false;//alert when a button gets pressed
 //*****************************************************************************
 //*****************************************************************************
 void DisableInterrupts(void)
@@ -88,7 +88,7 @@ bool debounce_fsm(void) {
   {
     case DEBOUNCE_ONE:
     {
-      if(pin_logic_level) {
+      if(pin_logic_level == 0x00) {
         state = DEBOUNCE_ONE;
       }
       else {
@@ -98,7 +98,7 @@ bool debounce_fsm(void) {
     }
     case DEBOUNCE_1ST_ZERO:
     {
-      if(pin_logic_level) {
+      if(pin_logic_level == 0x00) {
         state = DEBOUNCE_ONE;
       }
       else {
@@ -108,7 +108,7 @@ bool debounce_fsm(void) {
     }
     case DEBOUNCE_2ND_ZERO:
     {
-      if(pin_logic_level) {
+      if(pin_logic_level == 0x00) {
         state = DEBOUNCE_ONE;
       }
       else {
@@ -118,7 +118,7 @@ bool debounce_fsm(void) {
     }
     case DEBOUNCE_PRESSED:
     {
-      if(pin_logic_level){
+      if(pin_logic_level == 0x00){
         state = DEBOUNCE_ONE;
       }
       else {
@@ -457,9 +457,10 @@ void game_main(void) {
 		if (ALERT_BUTTON) {
 			debounce_wait();
 			buttonPress = debounce_fsm();
+			ALERT_BUTTON = false;
 		}
 	}
-	ALERT_BUTTON = false;
+	
 	
 	lcd_clear_screen(LCD_COLOR_BLACK);
 	
