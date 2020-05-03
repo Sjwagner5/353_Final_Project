@@ -102,5 +102,6 @@ void TIMER5A_Handler(void) {
 
 void GPIOF_Handler(void) {
 	ALERT_BUTTON = true;
+	printf("HANDLER");
 	GPIOF->ICR |= GPIO_ICR_GPIO_M;
 }

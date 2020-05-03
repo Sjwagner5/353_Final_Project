@@ -50,7 +50,6 @@ volatile int pixel_inc = 1;
 volatile PS2_DIR_t PS2_DIR = PS2_DIR_CENTER;
 
 volatile bool ALERT_BUTTON;
-
 //*****************************************************************************
 //*****************************************************************************
 void DisableInterrupts(void)
@@ -66,6 +65,78 @@ void EnableInterrupts(void)
 {
   __asm {
     CPSIE  I
+  }
+}
+
+void debounce_wait(void) {
+  int i = 10000;
+  // Delay
+	if (ALERT_BUTTON) {
+		while(i > 0){
+			i--;
+		}
+  }
+}
+
+bool debounce_fsm(void) {
+	static DEBOUNCE_STATES state = DEBOUNCE_ONE;
+  uint8_t pin_logic_level;
+
+  pin_logic_level = io_expander_read_reg(MCP23017_GPIOB_R);//clear interrupt and see if button occurred
+
+  switch (state)
+  {
+    case DEBOUNCE_ONE:
+    {
+      if(pin_logic_level) {
+        state = DEBOUNCE_ONE;
+      }
+      else {
+        state = DEBOUNCE_1ST_ZERO;
+      }
+      break;
+    }
+    case DEBOUNCE_1ST_ZERO:
+    {
+      if(pin_logic_level) {
+        state = DEBOUNCE_ONE;
+      }
+      else {
+        state = DEBOUNCE_2ND_ZERO;
+      }
+      break;
+    }
+    case DEBOUNCE_2ND_ZERO:
+    {
+      if(pin_logic_level) {
+        state = DEBOUNCE_ONE;
+      }
+      else {
+        state = DEBOUNCE_PRESSED;
+      }
+      break;
+    }
+    case DEBOUNCE_PRESSED:
+    {
+      if(pin_logic_level){
+        state = DEBOUNCE_ONE;
+      }
+      else {
+        state = DEBOUNCE_PRESSED;
+      }
+      break;
+    }
+    default:
+    {
+      while(1){};
+    }
+  }
+
+  if(state == DEBOUNCE_2ND_ZERO ){
+    return true;
+  }
+  else {
+    return false;
   }
 }
 
@@ -145,7 +216,7 @@ void explode_fruit(uint16_t xCoord, uint16_t yCoord) {
 	}
 	// Draw the explosion graphic in place of the fruit
 	lcd_draw_image(xCoord, explosionWidthPixels, yCoord, explosionHeightPixels, explosionBitmaps, LCD_COLOR_RED, LCD_COLOR_BLACK);
-	
+
   // Wait so that the explosion graphic is displayed for a little bit
 	for (i = 0; i <1000000; i++) {}
 
@@ -224,7 +295,7 @@ void title_screen(int diff){
 
 	// Title Screen Menu
 	printf("TITLE SCREEN\n");
-  
+
 	// Toggle the comment below to initalize EEPROM to 0 at address HS_ADDR
 	//eeprom_byte_write(I2C1_BASE, HS_ADDR, 0);
 
@@ -370,17 +441,17 @@ void end_screen(bool newHighScore) {
 	char highScoreValue[20];
 	char highscoreArr[] = "HIGHSCORE:";
 	char newHighScoreArr[] = "NEW HIGHSCORE!";
-	
+
 	// Get score/highscore values for display
 	snprintf(scoreValue, 20, "%d", score);
 	if(newHighScore)
 		snprintf(highScoreValue, 20, "%d", score);
 	else
 		snprintf(highScoreValue, 20, "%d", highscore);
-	
+
 	// End Screen Menu
 	lcd_clear_screen(LCD_COLOR_BLACK);
-	
+
 	// Display Game Over Text
 	j = 20;
 	length = strlen(gameover);
@@ -391,7 +462,7 @@ void end_screen(bool newHighScore) {
 		lcd_draw_image(width/2 + 10 + j, width, ROWS/5, 15, &vinerHandITC_14ptBitmaps2[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
 		j = 20 + j;
 	}
-	
+
 	// Display Score Text
 	j = 20;
 	length = strlen(scoreArr);
@@ -402,7 +473,7 @@ void end_screen(bool newHighScore) {
 		lcd_draw_image(10 + j, width, ROWS/3, 10, &courierNew_12ptBitmaps2[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
 		j = 10 + j;
 	}
-	
+
 	// Display Score Value Text
 	j = COLS/1.7;
 	length = strlen(scoreValue);
@@ -413,7 +484,7 @@ void end_screen(bool newHighScore) {
 		lcd_draw_image(15 + j, width, ROWS/3, 15, &courierNew_12ptBitmaps3[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
 		j = 10 + j;
 	}
-	
+
 	// Display High Score Text
 	j = 20;
 	length = strlen(highscoreArr);
@@ -424,7 +495,7 @@ void end_screen(bool newHighScore) {
 		lcd_draw_image(10 + j, width, ROWS/2, 10, &courierNew_12ptBitmaps2[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
 		j = 10 + j;
 	}
-	
+
 		// Display Score Value Text
 	j = COLS/1.7;
 	length = strlen(highScoreValue);
@@ -441,7 +512,7 @@ void end_screen(bool newHighScore) {
 		highscore = score;
 		eeprom_byte_write(I2C1_BASE, HS_ADDR, highscore);
 		printf("Highscore Stored: %d\n", highscore);
-		
+
 		// Display New High Score Text
 		j = 20;
 		length = strlen(newHighScoreArr);
@@ -466,11 +537,12 @@ void end_screen(bool newHighScore) {
 void game_main(void) {
 	char lastKey;
 	bool gameOver = false;
-	int i, diff;
-
+	int diff;
+	bool buttonPress = false;
 	printf("Running...\n");
+
 	diff = 3000;
-	for (i = 0; i < 100; i++) {
+	while(!buttonPress) {
 		if(PS2_DIR == PS2_DIR_UP){
 			diff -= 1;
 		}
@@ -479,10 +551,16 @@ void game_main(void) {
 		}
 
 		title_screen(diff % 3);
+		if (ALERT_BUTTON) {
+			debounce_wait();
+			buttonPress = debounce_fsm();
+		}
 	}
-  lcd_clear_screen(LCD_COLOR_BLACK);
+	ALERT_BUTTON = false;
 
-	// Main game loop
+	lcd_clear_screen(LCD_COLOR_BLACK);
+
+	//main game loop
 	while (!gameOver) {
 		// UART0: Pause and resume when space bar is hit.
 		lastKey = UART0_Rx_Buffer.array[(UART0_Rx_Buffer.produce_count - 1) % UART_BUFFER_SIZE];
@@ -496,9 +574,9 @@ void game_main(void) {
 			pc_buffer_add(&UART0_Rx_Buffer, '`');
 			printf("Running...\n");
 		}
-		
+
 		// Draw or move the apple when the timer is up
-		if (ALERT_APPLE) {		
+		if (ALERT_APPLE) {
 
 			ALERT_APPLE = false;
 			draw_apple();
