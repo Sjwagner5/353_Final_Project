@@ -50,7 +50,6 @@ volatile int pixel_inc = 1;//this will determine how many pixels the fruit move 
 volatile PS2_DIR_t PS2_DIR = PS2_DIR_CENTER;//the current direction of the joystick
 
 volatile bool ALERT_BUTTON;//alert when a button gets pressed
-
 //*****************************************************************************
 //*****************************************************************************
 void DisableInterrupts(void)
@@ -66,6 +65,78 @@ void EnableInterrupts(void)
 {
   __asm {
     CPSIE  I
+  }
+}
+
+void debounce_wait(void) {
+  int i = 10000;
+  // Delay
+	if (ALERT_BUTTON) {
+		while(i > 0){
+			i--;
+		}
+  }
+}
+
+bool debounce_fsm(void) {
+	static DEBOUNCE_STATES state = DEBOUNCE_ONE;
+  uint8_t pin_logic_level;
+  
+  pin_logic_level = io_expander_read_reg(MCP23017_GPIOB_R);//clear interrupt and see if button occurred
+  
+  switch (state)
+  {
+    case DEBOUNCE_ONE:
+    {
+      if(pin_logic_level) {
+        state = DEBOUNCE_ONE;
+      }
+      else {
+        state = DEBOUNCE_1ST_ZERO;
+      }
+      break;
+    }
+    case DEBOUNCE_1ST_ZERO:
+    {
+      if(pin_logic_level) {
+        state = DEBOUNCE_ONE;
+      }
+      else {
+        state = DEBOUNCE_2ND_ZERO;
+      }
+      break;
+    }
+    case DEBOUNCE_2ND_ZERO:
+    {
+      if(pin_logic_level) {
+        state = DEBOUNCE_ONE;
+      }
+      else {
+        state = DEBOUNCE_PRESSED;
+      }
+      break;
+    }
+    case DEBOUNCE_PRESSED:
+    {
+      if(pin_logic_level){
+        state = DEBOUNCE_ONE;
+      }
+      else {
+        state = DEBOUNCE_PRESSED;
+      }
+      break;
+    }
+    default:
+    {
+      while(1){};
+    }
+  }
+  
+  if(state == DEBOUNCE_2ND_ZERO ){
+    return true;
+  }
+  else {
+    return false;
   }
 }
 
@@ -369,23 +440,27 @@ void end_screen(bool newHighScore){
 void game_main(void) {
 	char lastKey;
 	bool gameOver = false;
-	int i, diff;
-
+	int diff;
+	bool buttonPress = false;
 	printf("Running...\n");
+	
 	diff = 3000;
-	//while(!ALERT_BUTTON) {
-		for (i = 0; i < 100; i++) {
-			if(PS2_DIR == PS2_DIR_UP){
-				diff -= 1;
-			}
-			else if(PS2_DIR == PS2_DIR_DOWN) {
-				diff += 1;
-			}
-		
-			title_screen(diff % 3);
+	while(!buttonPress) {		
+		if(PS2_DIR == PS2_DIR_UP){
+			diff -= 1;
 		}
-		//ALERT_BUTTON = false;
-	//}
+		else if(PS2_DIR == PS2_DIR_DOWN) {
+			diff += 1;
+		}
+		
+		title_screen(diff % 3);
+		if (ALERT_BUTTON) {
+			debounce_wait();
+			buttonPress = debounce_fsm();
+		}
+	}
+	ALERT_BUTTON = false;
+	
 	lcd_clear_screen(LCD_COLOR_BLACK);
 	
 	//main game loop
