@@ -472,6 +472,11 @@
               <FileType>1</FileType>
               <FilePath>..\drivers\c\uart.c</FilePath>
             </File>
+            <File>
+              <FileName>gptimer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drivers\c\gptimer.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
