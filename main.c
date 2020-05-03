@@ -46,6 +46,9 @@ static int score = 0;//this will store the current user's score (number of fruit
 static int numLives = 3;//this will store the number of lives the user has left. This will be displayed with the red LEDs at the top of the board
 static uint8_t highscore = 0;
 volatile int pixel_inc = 1;//this will determine how many pixels the fruit move at a time (1 for easy level, 2 for medium level, 3 for hard level)
+
+volatile PS2_DIR_t PS2_DIR = PS2_DIR_CENTER;//the current direction of the joystick
+
 //*****************************************************************************
 //*****************************************************************************
 void DisableInterrupts(void)
@@ -338,7 +341,6 @@ void end_screen(bool newHighScore){
 	printf("Highschool: %d\n", highscore);
 
 
-
 	printf("END SCREEN\n\n\n");
 }
 
@@ -391,7 +393,7 @@ void game_main(void) {
   //TODO: add game over screen and show final score
   end_screen(score > highscore);
 
-	//TODO: also need to add use of LED's and high score with eeprom
+	//TODO: also need to add high score with eeprom
 }
 
 //*****************************************************************************

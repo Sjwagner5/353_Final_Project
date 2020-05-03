@@ -23,6 +23,24 @@
 #include "main.h"
 #include "project_interrupts.h"
 
+static volatile uint16_t PS2_X_DATA = 0;
+static volatile uint16_t PS2_Y_DATA = 0;//store the y data ADC value of the joystick
+
+//*****************************************************************************
+// Returns the most current direction that was pressed.
+//*****************************************************************************
+PS2_DIR_t ps2_get_direction(void){
+	
+ if (PS2_Y_DATA > PS2_ADC_HIGH_THRESHOLD) {
+		return PS2_DIR_UP;
+			
+	} else if (PS2_Y_DATA < PS2_ADC_LOW_THRESHOLD) {
+		return PS2_DIR_DOWN;
+			
+	} else {
+		return PS2_DIR_CENTER;
+	}
+}
 
 
 //Timer 1 ISR that blinks the red LED to indicate that the program is running
@@ -51,9 +69,26 @@ void TIMER3A_Handler(void) {
 	return;
 }
 
-//Timer 4 ISR will check the ADC value
-void TIMER4A_Handler(void) {
-	return;
+//*****************************************************************************
+// TIMER4 ISR is used to trigger the ADC
+//*****************************************************************************
+void TIMER4A_Handler(void)
+{	
+	ADC0->PSSI |= ADC_PSSI_SS2;
+	// Clear the interrupt
+	TIMER4->ICR |= TIMER_ICR_TATOCINT; 
+}
+
+//*****************************************************************************
+// ADC0 SS2 ISR
+//*****************************************************************************
+void ADC0SS2_Handler(void)
+{
+	PS2_X_DATA = ADC0->SSFIFO2;//Read the x value to get the first value in the fifo out of the way, we will not use it
+	PS2_Y_DATA = ADC0->SSFIFO2;
+	PS2_DIR =  ps2_get_direction();
+  // Clear the interrupt
+  ADC0->ISC |= ADC_ISC_IN2;
 }
 
 //Timer 5 ISR will move the orange
