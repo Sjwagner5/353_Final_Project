@@ -22,7 +22,7 @@
 
 #include "main.h"
 
-//store the current position of each fruit
+// Store the current position of each fruit
 volatile uint16_t BANANA_X_COORD = 0;
 volatile uint16_t BANANA_Y_COORD = 0;
 volatile uint16_t APPLE_X_COORD = 0;
@@ -30,26 +30,26 @@ volatile uint16_t APPLE_Y_COORD = 0;
 volatile uint16_t ORANGE_X_COORD = 0;
 volatile uint16_t ORANGE_Y_COORD = 0;
 
-//when true, we will move the fruit
+// When true, we will move the fruit
 volatile bool ALERT_APPLE = true;
 volatile bool ALERT_BANANA = true;
 volatile bool ALERT_ORANGE = true;
 
-//these boolean variables will track if there is currently one of these fruits on the screen
+// These boolean variables will track if there is currently one of these fruits on the screen
 volatile bool APPLE_PRESENT = false;
 volatile bool BANANA_PRESENT = false;
 volatile bool ORANGE_PRESENT = false;
 
 static const uint16_t START_STATE = 0xACE7u;
 
-static int score = 0;//this will store the current user's score (number of fruit destroyed)
-static int numLives = 3;//this will store the number of lives the user has left. This will be displayed with the red LEDs at the top of the board
+static int score = 0;
+static int numLives = 3;
 static uint8_t highscore = 0;
-volatile int pixel_inc = 1;//this will determine how many pixels the fruit move at a time (1 for easy level, 2 for medium level, 3 for hard level)
+volatile int pixel_inc = 1;
 
-volatile PS2_DIR_t PS2_DIR = PS2_DIR_CENTER;//the current direction of the joystick
+volatile PS2_DIR_t PS2_DIR = PS2_DIR_CENTER;
 
-volatile bool ALERT_BUTTON;//alert when a button gets pressed
+volatile bool ALERT_BUTTON;
 
 //*****************************************************************************
 //*****************************************************************************
@@ -87,6 +87,10 @@ uint16_t generate_random_x(uint8_t image_width)
 		}
     return lfsr;
 }
+
+//*****************************************************************************
+// Draw a Bannana
+//*****************************************************************************
 void draw_banana(void) {
 	if (!BANANA_PRESENT) {
 		BANANA_X_COORD = generate_random_x(bananaWidthPixels);
@@ -99,6 +103,9 @@ void draw_banana(void) {
 	lcd_draw_image(BANANA_X_COORD, bananaWidthPixels, BANANA_Y_COORD, bananaHeightPixels, bananaBitmaps, LCD_COLOR_YELLOW, LCD_COLOR_BLACK);
 }
 
+//*****************************************************************************
+// Draw an Apple
+//*****************************************************************************
 void draw_apple(void) {
 	if (!APPLE_PRESENT) {
 		APPLE_X_COORD = generate_random_x(appleWidthPixels);
@@ -110,6 +117,9 @@ void draw_apple(void) {
 	lcd_draw_image(APPLE_X_COORD, appleWidthPixels, APPLE_Y_COORD, appleHeightPixels, appleBitmaps, LCD_COLOR_RED, LCD_COLOR_BLACK);
 }
 
+//*****************************************************************************
+// Draw an Orange
+//*****************************************************************************
 void draw_orange(void) {
 	if (!ORANGE_PRESENT) {
 		ORANGE_X_COORD = generate_random_x(orangeWidthPixels);
@@ -121,7 +131,9 @@ void draw_orange(void) {
 	lcd_draw_image(ORANGE_X_COORD, orangeWidthPixels, ORANGE_Y_COORD, orangeHeightPixels, orangeBitmaps, LCD_COLOR_BLACK, LCD_COLOR_ORANGE);
 }
 
-//Replace each fruit with an explosion when they are touched
+//*****************************************************************************
+// Replace each fruit with an explosion when they are touched
+//*****************************************************************************
 void explode_fruit(uint16_t xCoord, uint16_t yCoord) {
 	int i = 0;
 
@@ -131,13 +143,14 @@ void explode_fruit(uint16_t xCoord, uint16_t yCoord) {
 	} else if (xCoord - explosionWidthPixels/2 <= 0){//if the explosion will overlap the left edge of the screen, draw it at the left edge
 		xCoord = 0+explosionWidthPixels/2 + 1;
 	}
-	//draw the explosion graphic in place of the fruit
+	// Draw the explosion graphic in place of the fruit
 	lcd_draw_image(xCoord, explosionWidthPixels, yCoord, explosionHeightPixels, explosionBitmaps, LCD_COLOR_RED, LCD_COLOR_BLACK);
+	
+  // Wait so that the explosion graphic is displayed for a little bit
+	for (i = 0; i <1000000; i++) {}
 
-	for (i = 0; i <1000000; i++) {}//wait so that the explosion graphic is displayed for a little bit
-
+	// Clear the explosion graphic
 	lcd_draw_rectangle(xCoord-explosionWidthPixels/2, explosionWidthPixels, yCoord-explosionHeightPixels/2, explosionHeightPixels, LCD_COLOR_BLACK);
-	//clear the explosion graphic
 }
 
 //*****************************************************************************
@@ -148,7 +161,7 @@ void life_lost(void) {
 	io_expander_write_reg(MCP23017_GPIOA_R, 0xFF>>(8-numLives));
 	lcd_clear_screen(LCD_COLOR_BLACK);//clear the screen of all fruit
 
-	//set these to false so that the program redraws fruits in a random position at the top of the screen
+	// Set these to false so that the program redraws fruits in a random position at the top of the screen
 	APPLE_PRESENT = false;
 	BANANA_PRESENT = false;
 	ORANGE_PRESENT = false;
@@ -160,9 +173,9 @@ void life_lost(void) {
 void check_touch(void) {
 	int xTouch = ft6x06_read_x();
 	int yTouch = ft6x06_read_y();
-	//get the coordinates of the latest x and y touch
+	// Get the coordinates of the latest x and y touch
 
-	//check if the apple has been touched
+	// Check if the apple has been touched
 	if (APPLE_X_COORD - appleWidthPixels/2 <= xTouch &&
 			APPLE_X_COORD + appleWidthPixels/2 >= xTouch &&
 			APPLE_Y_COORD - appleHeightPixels/2 <= yTouch &&
@@ -171,7 +184,7 @@ void check_touch(void) {
 			explode_fruit(APPLE_X_COORD, APPLE_Y_COORD);
 			APPLE_PRESENT = false;
 			score++;
-	//check if the banana has been touched
+	// Check if the banana has been touched
 	} else if (BANANA_X_COORD - bananaWidthPixels/2 <= xTouch &&
 						 BANANA_X_COORD + bananaWidthPixels/2 >= xTouch &&
 						 BANANA_Y_COORD - bananaHeightPixels/2 <= yTouch &&
@@ -181,7 +194,7 @@ void check_touch(void) {
 			BANANA_PRESENT = false;
 			score++;
 
-	//check if the orange has been touched
+	// Check if the orange has been touched
 	} else if (ORANGE_X_COORD - orangeWidthPixels/2 <= xTouch &&
 						 ORANGE_X_COORD + orangeWidthPixels/2 >= xTouch &&
 						 ORANGE_Y_COORD - orangeHeightPixels/2 <= yTouch &&
@@ -193,8 +206,10 @@ void check_touch(void) {
 	}
 }
 
+//*****************************************************************************
+// Displays title screen
+//*****************************************************************************
 void title_screen(int diff){
-
 	int offset;
 	int bitmapOff;
 	int width;
@@ -205,13 +220,13 @@ void title_screen(int diff){
 	char joystick[] = "USE JOYSTICK TO SELECT LEVEL";
 	char difficulty[] = "EASY MED HARD";
 	char button[] = "PUSH TO START";
-	uint16_t gfg, gbg, yfg, ybg, rfg, rbg;
+	uint16_t gfg, yfg, rfg;
 
 	// Title Screen Menu
-	//lcd_clear_screen(LCD_COLOR_BLACK);
 	printf("TITLE SCREEN\n");
-
-	//eeprom_byte_write(I2C1_BASE, HS_ADDR, highscore); // Toggle this comment to initalize EEPROM to 0 at address HS_ADDR
+  
+	// Toggle the comment below to initalize EEPROM to 0 at address HS_ADDR
+	//eeprom_byte_write(I2C1_BASE, HS_ADDR, 0);
 
 	// Load Highscore
 	eeprom_byte_read(I2C1_BASE, HS_ADDR, &highscore);
@@ -219,7 +234,7 @@ void title_screen(int diff){
 	printf("Score: %d\n", score);
 	printf("Highscore: %d\n", highscore);
 
-	//turn on the first 3 LEDs to show that there are 3 lives left
+	// Turn on the first 3 LEDs to show that there are 3 lives left
 	io_expander_write_reg(MCP23017_GPIOA_R, 0x07);
 
 	// Display Welcome Text
@@ -265,25 +280,22 @@ void title_screen(int diff){
 		else {
 			lcd_draw_image(10 + j, width, ROWS/1.8, 8, &courierNew_10ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
 		}
-
 		j = 10 + j;
 	}
 
-	gfg = LCD_COLOR_GREEN;  gbg = LCD_COLOR_BLACK;
-	yfg = LCD_COLOR_YELLOW; ybg = LCD_COLOR_BLACK;
-	rfg = LCD_COLOR_RED;    rbg = LCD_COLOR_BLACK;
+	// Toggle Difficulty Colors
+	gfg = LCD_COLOR_WHITE;
+	yfg = LCD_COLOR_WHITE;
+	rfg = LCD_COLOR_WHITE;
 	switch(diff){
 		case 0:
-			gfg = LCD_COLOR_GRAY;
-		  gbg = LCD_COLOR_GREEN;
+			gfg = LCD_COLOR_GREEN;
 		break;
 		case 1:
-			yfg = LCD_COLOR_GRAY;
-		  ybg = LCD_COLOR_YELLOW;
+			yfg = LCD_COLOR_YELLOW;
 		break;
 	  case 2:
-			rfg = LCD_COLOR_GRAY;
-		  rbg = LCD_COLOR_RED;
+			rfg = LCD_COLOR_RED;
 		break;
 
 	}
@@ -296,19 +308,18 @@ void title_screen(int diff){
 		bitmapOff = courierNew_12ptDescriptors[offset].offset;
 		width = courierNew_12ptDescriptors[offset].widthBits;
 		if(i <= 4){
-			lcd_draw_image(width + j, width, ROWS/2.25, 9, &courierNew_12ptBitmaps[bitmapOff], gfg, gbg);
+			lcd_draw_image(width + j, width, ROWS/2.25, 9, &courierNew_12ptBitmaps[bitmapOff], gfg, LCD_COLOR_BLACK);
 			if(i == 4)
 					j = COLS/2 + 8;
 		}
 		else if(i < 9){
-			lcd_draw_image(width + j, width, ROWS/1.9, 9, &courierNew_12ptBitmaps[bitmapOff], yfg, ybg);
+			lcd_draw_image(width + j, width, ROWS/1.9, 9, &courierNew_12ptBitmaps[bitmapOff], yfg, LCD_COLOR_BLACK);
 			if(i == 8)
 					j = COLS/2 + 10;
 		}
 		else {
-			lcd_draw_image(width + j, width, ROWS/1.65, 9, &courierNew_12ptBitmaps[bitmapOff], rfg, rbg);
+			lcd_draw_image(width + j, width, ROWS/1.65, 9, &courierNew_12ptBitmaps[bitmapOff], rfg, LCD_COLOR_BLACK);
 		}
-
 		j = 15 + j;
 	}
 
@@ -323,16 +334,14 @@ void title_screen(int diff){
 		j = 10 + j;
 	}
 
-	// Cornucopia
+	// Display Images
   ORANGE_X_COORD = orangeWidthPixels/2;
 	ORANGE_Y_COORD = orangeHeightPixels/2;
 	lcd_draw_image(ORANGE_X_COORD, orangeWidthPixels, ORANGE_Y_COORD, orangeHeightPixels, orangeBitmaps, LCD_COLOR_BLACK, LCD_COLOR_ORANGE);
 
-
   BANANA_X_COORD = bananaWidthPixels/2;
 	BANANA_Y_COORD = COLS - 35 + bananaHeightPixels/2;
 	lcd_draw_image(BANANA_X_COORD, bananaWidthPixels, BANANA_Y_COORD, bananaHeightPixels, bananaBitmaps, LCD_COLOR_YELLOW, LCD_COLOR_BLACK);
-
 
   APPLE_X_COORD = ROWS/2 + appleWidthPixels/2;
 	APPLE_Y_COORD = COLS + appleHeightPixels/2;
@@ -340,24 +349,109 @@ void title_screen(int diff){
 
 	lcd_draw_rectangle(ROWS/2 + 45, 100, COLS/2, 200, LCD_COLOR_BLACK);
 
-
-
 	// Game Settings
-	//TODO: add main menu to choose easy or medium or hard (select with joystick)
-	//if easy: set pixel_inc to 1, if medium: set pixel_inc to 2, if hard: set pixel_inc to 3
-	//add functionality to start game on any push button press
+	// if easy: set pixel_inc to 1, if medium: set pixel_inc to 2, if hard: set pixel_inc to 3
 	pixel_inc = diff + 1;
 }
 
-void end_screen(bool newHighScore){
+//*****************************************************************************
+// Displays end screen
+//*****************************************************************************
+void end_screen(bool newHighScore) {
+	int offset;
+	int bitmapOff;
+	int width;
+	int length;
+	int i;
+	int j;
+	char gameover[] = "GAME OVER";
+	char scoreArr[] = "SCORE:";
+	char scoreValue[20];
+	char highScoreValue[20];
+	char highscoreArr[] = "HIGHSCORE:";
+	char newHighScoreArr[] = "NEW HIGHSCORE!";
+	
+	// Get score/highscore values for display
+	snprintf(scoreValue, 20, "%d", score);
+	if(newHighScore)
+		snprintf(highScoreValue, 20, "%d", score);
+	else
+		snprintf(highScoreValue, 20, "%d", highscore);
+	
 	// End Screen Menu
 	lcd_clear_screen(LCD_COLOR_BLACK);
+	
+	// Display Game Over Text
+	j = 20;
+	length = strlen(gameover);
+	for (i = 0; i < length; i++) {
+		offset = gameover[i] - 'A';
+		bitmapOff = vinerHandITC_14ptDescriptors2[offset].offset;
+		width = vinerHandITC_14ptDescriptors2[offset].widthBits;
+		lcd_draw_image(width/2 + 10 + j, width, ROWS/5, 15, &vinerHandITC_14ptBitmaps2[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+		j = 20 + j;
+	}
+	
+	// Display Score Text
+	j = 20;
+	length = strlen(scoreArr);
+	for (i = 0; i < length; i++) {
+		offset = scoreArr[i] - '!';
+		bitmapOff = courierNew_12ptDescriptors2[offset].offset;
+		width = courierNew_12ptDescriptors2[offset].widthBits;
+		lcd_draw_image(10 + j, width, ROWS/3, 10, &courierNew_12ptBitmaps2[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+		j = 10 + j;
+	}
+	
+	// Display Score Value Text
+	j = COLS/1.7;
+	length = strlen(scoreValue);
+	for (i = 0; i < length; i++) {
+		offset = scoreValue[i] - '0';
+		bitmapOff = courierNew_12ptDescriptors3[offset].offset;
+		width = courierNew_12ptDescriptors3[offset].widthBits;
+		lcd_draw_image(15 + j, width, ROWS/3, 15, &courierNew_12ptBitmaps3[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+		j = 10 + j;
+	}
+	
+	// Display High Score Text
+	j = 20;
+	length = strlen(highscoreArr);
+	for (i = 0; i < length; i++) {
+		offset = highscoreArr[i] - '!';
+		bitmapOff = courierNew_12ptDescriptors2[offset].offset;
+		width = courierNew_12ptDescriptors2[offset].widthBits;
+		lcd_draw_image(10 + j, width, ROWS/2, 10, &courierNew_12ptBitmaps2[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+		j = 10 + j;
+	}
+	
+		// Display Score Value Text
+	j = COLS/1.7;
+	length = strlen(highScoreValue);
+	for (i = 0; i < length; i++) {
+		offset = highScoreValue[i] - '0';
+		bitmapOff = courierNew_12ptDescriptors3[offset].offset;
+		width = courierNew_12ptDescriptors3[offset].widthBits;
+		lcd_draw_image(15 + j, width, ROWS/2, 15, &courierNew_12ptBitmaps3[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+		j = 10 + j;
+	}
 
 	// Store New Highscore
 	if(newHighScore){
 		highscore = score;
 		eeprom_byte_write(I2C1_BASE, HS_ADDR, highscore);
 		printf("Highscore Stored: %d\n", highscore);
+		
+		// Display New High Score Text
+		j = 20;
+		length = strlen(newHighScoreArr);
+		for (i = 0; i < length; i++) {
+			offset = newHighScoreArr[i] - '!';
+			bitmapOff = courierNew_12ptDescriptors2[offset].offset;
+			width = courierNew_12ptDescriptors2[offset].widthBits;
+			lcd_draw_image(width + j, width, ROWS/1.25, 10, &courierNew_12ptBitmaps2[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+			j = 10 + j;
+		}
 	}
 	printf("Score: %d\n", score);
 	printf("Highschool: %d\n", highscore);
@@ -366,6 +460,9 @@ void end_screen(bool newHighScore){
 	printf("END SCREEN\n\n\n");
 }
 
+//*****************************************************************************
+// Main Game Function
+//*****************************************************************************
 void game_main(void) {
 	char lastKey;
 	bool gameOver = false;
@@ -373,22 +470,19 @@ void game_main(void) {
 
 	printf("Running...\n");
 	diff = 3000;
-	//while(!ALERT_BUTTON) {
-		for (i = 0; i < 100; i++) {
-			if(PS2_DIR == PS2_DIR_UP){
-				diff -= 1;
-			}
-			else if(PS2_DIR == PS2_DIR_DOWN) {
-				diff += 1;
-			}
-
-			title_screen(diff % 3);
+	for (i = 0; i < 100; i++) {
+		if(PS2_DIR == PS2_DIR_UP){
+			diff -= 1;
 		}
-		//ALERT_BUTTON = false;
-	//}
-	lcd_clear_screen(LCD_COLOR_BLACK);
+		else if(PS2_DIR == PS2_DIR_DOWN) {
+			diff += 1;
+		}
 
-	//main game loop
+		title_screen(diff % 3);
+	}
+  lcd_clear_screen(LCD_COLOR_BLACK);
+
+	// Main game loop
 	while (!gameOver) {
 		// UART0: Pause and resume when space bar is hit.
 		lastKey = UART0_Rx_Buffer.array[(UART0_Rx_Buffer.produce_count - 1) % UART_BUFFER_SIZE];
@@ -402,16 +496,20 @@ void game_main(void) {
 			pc_buffer_add(&UART0_Rx_Buffer, '`');
 			printf("Running...\n");
 		}
+		
+		// Draw or move the apple when the timer is up
+		if (ALERT_APPLE) {		
 
-		if (ALERT_APPLE) {//draw or move the apple when the timer is up
 			ALERT_APPLE = false;
 			draw_apple();
 		}
-		if (ALERT_BANANA) {//draw or move the banana when the timer is up
+		// Draw or move the banana when the timer is up
+		if (ALERT_BANANA) {
 			ALERT_BANANA = false;
 			draw_banana();
 		}
-		if (ALERT_ORANGE) {//draw or move the orange when the timer is up
+		// Draw or move the orange when the timer is up
+		if (ALERT_ORANGE) {
 			ALERT_ORANGE = false;
 			draw_orange();
 		}
@@ -419,22 +517,24 @@ void game_main(void) {
 			check_touch();
 		}
 
-		//if any of the fruits reach the bottom of the screen, the user loses a life
+		// If any of the fruits reach the bottom of the screen, the user loses a life
 		if (((APPLE_Y_COORD + (appleHeightPixels/2)) >= ROWS) || ((BANANA_Y_COORD + (bananaHeightPixels/2)) >= ROWS) || ((ORANGE_Y_COORD + (orangeHeightPixels/2)) >= ROWS)) {
+		  // Lose a life for the user and restart the game
 			numLives--;
-			life_lost();//lose a life for the user and restart the game
+			life_lost();
 		}
-		if (numLives == 0) {//once the user reaches 0 lives left, the game is over
+		// Once the user reaches 0 lives left, the game is over
+		if (numLives == 0) {
 			gameOver = true;
 		}
 	}
-  //TODO: add game over screen and show final score
+
   end_screen(score > highscore);
 
-	//TODO: also need to add high score with eeprom
 }
 
 //*****************************************************************************
+// Main
 //*****************************************************************************
 int
 main(void)
