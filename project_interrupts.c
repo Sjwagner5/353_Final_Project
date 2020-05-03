@@ -23,6 +23,8 @@
 #include "main.h"
 #include "project_interrupts.h"
 
+#define OFFSET 700 //used to increase and decrease the ADC thresholds so that the joystick is not as sensitive
+
 static volatile uint16_t PS2_X_DATA = 0;
 static volatile uint16_t PS2_Y_DATA = 0;//store the y data ADC value of the joystick
 
@@ -31,10 +33,10 @@ static volatile uint16_t PS2_Y_DATA = 0;//store the y data ADC value of the joys
 //*****************************************************************************
 PS2_DIR_t ps2_get_direction(void){
 	
- if (PS2_Y_DATA > PS2_ADC_HIGH_THRESHOLD) {
+ if (PS2_Y_DATA > PS2_ADC_HIGH_THRESHOLD + OFFSET) {
 		return PS2_DIR_UP;
 			
-	} else if (PS2_Y_DATA < PS2_ADC_LOW_THRESHOLD) {
+	} else if (PS2_Y_DATA < PS2_ADC_LOW_THRESHOLD - OFFSET) {
 		return PS2_DIR_DOWN;
 			
 	} else {
@@ -98,8 +100,7 @@ void TIMER5A_Handler(void) {
 	return;
 }
 
-//This ISR will handle the interrupt when a push button is pressed
 void GPIOF_Handler(void) {
-	printf("\nBUTTON PRESSED!");
+	ALERT_BUTTON = true;
 	GPIOF->ICR |= GPIO_ICR_GPIO_M;
 }

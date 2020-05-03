@@ -89,4 +89,11 @@ extern const uint8_t courierNew_12ptBitmaps2[];
 extern const FONT_INFO courierNew_12ptFontInfo2;
 extern const FONT_CHAR_INFO courierNew_12ptDescriptors2[];
 
+// Font data for Courier New 12pt
+// Used for numbers printed on screen
+extern const uint8_t courierNew_12ptBitmaps3[];
+extern const FONT_INFO courierNew_12ptFontInfo3;
+extern const FONT_CHAR_INFO courierNew_12ptDescriptors3[];
+
+
 #endif

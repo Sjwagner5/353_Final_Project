@@ -49,6 +49,8 @@ volatile int pixel_inc = 1;//this will determine how many pixels the fruit move 
 
 volatile PS2_DIR_t PS2_DIR = PS2_DIR_CENTER;//the current direction of the joystick
 
+volatile bool ALERT_BUTTON;//alert when a button gets pressed
+
 //*****************************************************************************
 //*****************************************************************************
 void DisableInterrupts(void)
@@ -191,7 +193,7 @@ void check_touch(void) {
 	}
 }
 
-void title_screen(void){
+void title_screen(int diff){
 
 	int offset;
 	int bitmapOff;
@@ -199,12 +201,17 @@ void title_screen(void){
 	int length;
 	int i;
 	int j;
-	char welcome[] = "WELCOME TO FRUIT NINJA";
+	char welcome[] = "WELCOME TO FRUIT ASSASSIN";
+	char joystick[] = "USE JOYSTICK TO SELECT LEVEL";
+	char difficulty[] = "EASY MED HARD";
+	char button[] = "PUSH TO START";
+	uint16_t gfg, gbg, yfg, ybg, rfg, rbg;
 	
 	// Title Screen Menu
-	lcd_clear_screen(LCD_COLOR_BLACK);
+	//lcd_clear_screen(LCD_COLOR_BLACK);
 	printf("TITLE SCREEN\n");
-	//eeprom_byte_write(I2C1_BASE, HS_ADDR, highscore); // Un-comment this to initalize EEPROM to 0 at address HS_ADDR
+	
+	//eeprom_byte_write(I2C1_BASE, HS_ADDR, highscore); // Toggle this comment to initalize EEPROM to 0 at address HS_ADDR
 
 	// Load Highscore
 	eeprom_byte_read(I2C1_BASE, HS_ADDR, &highscore);
@@ -215,22 +222,131 @@ void title_screen(void){
 	//turn on the first 3 LEDs to show that there are 3 lives left
 	io_expander_write_reg(MCP23017_GPIOA_R, 0x07);
 	
-	j = 0;
+	// Display Welcome Text
+	j = 20;
 	length = strlen(welcome);
 	for (i = 0; i < length; i++) {
 		offset = welcome[i] - 'A';
 		bitmapOff = vinerHandITC_14ptDescriptors[offset].offset;
 		width = vinerHandITC_14ptDescriptors[offset].widthBits;
-		lcd_draw_image(10 + j, width, ROWS/2, 10, &vinerHandITC_14ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+		if(i < 11){
+			lcd_draw_image(15 + j, width, ROWS/5, 15, &vinerHandITC_14ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+			if(i + 1 == 11)
+				j = 45;
+		}
+		else if(i < 17){
+			lcd_draw_image(15 + j, width, ROWS/3.75, 15, &vinerHandITC_14ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+			if(i + 1 == 17)
+				j = 20;
+		}
+		else {
+			lcd_draw_image(15 + j, width, ROWS/3, 15, &vinerHandITC_14ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+		}
 		j = 20 + j;
 	}
-	//for (i = 0; i < 1000000000; i++) {}
+	
+	// Display Joystick Text
+	j = 0;
+	length = strlen(joystick);
+	for (i = 0; i < length; i++) {
+		offset = joystick[i] - 'C';
+		bitmapOff = courierNew_10ptDescriptors[offset].offset;
+		width = courierNew_10ptDescriptors[offset].widthBits;
+		if(i < 12){
+			lcd_draw_image(10 + j, width, ROWS/2.25, 8, &courierNew_10ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+			if(i + 1 == 12)
+					j = -20;
+		}
+		else if(i < 22){
+			lcd_draw_image(10 + j, width, ROWS/2, 8, &courierNew_10ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+			if(i + 1 == 22)
+					j = -20;
+		}
+		else {
+			lcd_draw_image(10 + j, width, ROWS/1.8, 8, &courierNew_10ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+		}	
+		
+		j = 10 + j;
+	}
+	
+	gfg = LCD_COLOR_GREEN;  gbg = LCD_COLOR_BLACK;
+	yfg = LCD_COLOR_YELLOW; ybg = LCD_COLOR_BLACK;
+	rfg = LCD_COLOR_RED;    rbg = LCD_COLOR_BLACK;
+	switch(diff){
+		case 0: 
+			gfg = LCD_COLOR_GRAY;
+		  gbg = LCD_COLOR_GREEN;
+		break;
+		case 1: 
+			yfg = LCD_COLOR_GRAY;
+		  ybg = LCD_COLOR_YELLOW;
+		break;
+	  case 2: 
+			rfg = LCD_COLOR_GRAY;
+		  rbg = LCD_COLOR_RED;
+		break;
+		
+	}
+	
+	// Display Difficulty Text
+	j = COLS/2 + 25;
+	length = strlen(difficulty);
+	for (i = 0; i < length; i++) {
+		offset = difficulty[i] - 'A';
+		bitmapOff = courierNew_12ptDescriptors[offset].offset;
+		width = courierNew_12ptDescriptors[offset].widthBits;
+		if(i <= 4){
+			lcd_draw_image(width + j, width, ROWS/2.25, 9, &courierNew_12ptBitmaps[bitmapOff], gfg, gbg);
+			if(i == 4)
+					j = COLS/2 + 8;
+		}
+		else if(i < 9){
+			lcd_draw_image(width + j, width, ROWS/1.9, 9, &courierNew_12ptBitmaps[bitmapOff], yfg, ybg);
+			if(i == 8)
+					j = COLS/2 + 10;
+		}
+		else {
+			lcd_draw_image(width + j, width, ROWS/1.65, 9, &courierNew_12ptBitmaps[bitmapOff], rfg, rbg);
+		}	
+		
+		j = 15 + j;
+	}
+	
+	// Display Button Text	
+	j = 20;
+	length = strlen(button);
+	for (i = 0; i < length; i++) {
+		offset = button[i] - 'A';
+		bitmapOff = courierNew_10ptDescriptors2[offset].offset;
+		width = courierNew_10ptDescriptors2[offset].widthBits;
+		lcd_draw_image(width + j, width, ROWS - 40, 8, &courierNew_10ptBitmaps2[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+		j = 10 + j;
+	}
+	
+	// Cornucopia
+  ORANGE_X_COORD = orangeWidthPixels/2;
+	ORANGE_Y_COORD = orangeHeightPixels/2;
+	lcd_draw_image(ORANGE_X_COORD, orangeWidthPixels, ORANGE_Y_COORD, orangeHeightPixels, orangeBitmaps, LCD_COLOR_BLACK, LCD_COLOR_ORANGE);
+
+	
+  BANANA_X_COORD = bananaWidthPixels/2;
+	BANANA_Y_COORD = COLS - 35 + bananaHeightPixels/2;
+	lcd_draw_image(BANANA_X_COORD, bananaWidthPixels, BANANA_Y_COORD, bananaHeightPixels, bananaBitmaps, LCD_COLOR_YELLOW, LCD_COLOR_BLACK);
+	
+	
+  APPLE_X_COORD = ROWS/2 + appleWidthPixels/2;
+	APPLE_Y_COORD = COLS + appleHeightPixels/2;
+	lcd_draw_image(APPLE_X_COORD, appleWidthPixels, APPLE_Y_COORD, appleHeightPixels, appleBitmaps, LCD_COLOR_RED, LCD_COLOR_BLACK);
+	
+	lcd_draw_rectangle(ROWS/2 + 45, 100, COLS/2, 200, LCD_COLOR_BLACK);
+	
+	
 
 	// Game Settings
 	//TODO: add main menu to choose easy or medium or hard (select with joystick)
 	//if easy: set pixel_inc to 1, if medium: set pixel_inc to 2, if hard: set pixel_inc to 3
 	//add functionality to start game on any push button press
-	pixel_inc = 1;
+	pixel_inc = diff + 1;
 }
 
 void end_screen(bool newHighScore){
@@ -253,10 +369,23 @@ void end_screen(bool newHighScore){
 void game_main(void) {
 	char lastKey;
 	bool gameOver = false;
+	int i, diff;
 
 	printf("Running...\n");
-
-  title_screen();
+	diff = 3000;
+	//while(!ALERT_BUTTON) {
+		for (i = 0; i < 100; i++) {
+			if(PS2_DIR == PS2_DIR_UP){
+				diff -= 1;
+			}
+			else if(PS2_DIR == PS2_DIR_DOWN) {
+				diff += 1;
+			}
+		
+			title_screen(diff % 3);
+		}
+		//ALERT_BUTTON = false;
+	//}
 	lcd_clear_screen(LCD_COLOR_BLACK);
 	
 	//main game loop
@@ -314,4 +443,3 @@ main(void)
 		game_main();
     while(1){};
 }
-
