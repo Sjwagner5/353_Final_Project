@@ -191,7 +191,7 @@ void check_touch(void) {
 	}
 }
 
-void title_screen(void){
+void title_screen(int diff){
 
 	int offset;
 	int bitmapOff;
@@ -203,9 +203,10 @@ void title_screen(void){
 	char joystick[] = "USE JOYSTICK TO SELECT LEVEL";
 	char difficulty[] = "EASY MED HARD";
 	char button[] = "PUSH TO START";
+	uint16_t gfg, gbg, yfg, ybg, rfg, rbg;
 	
 	// Title Screen Menu
-	lcd_clear_screen(LCD_COLOR_BLACK);
+	//lcd_clear_screen(LCD_COLOR_BLACK);
 	printf("TITLE SCREEN\n");
 	
 	//eeprom_byte_write(I2C1_BASE, HS_ADDR, highscore); // Toggle this comment to initalize EEPROM to 0 at address HS_ADDR
@@ -266,6 +267,25 @@ void title_screen(void){
 		j = 10 + j;
 	}
 	
+	gfg = LCD_COLOR_GREEN;  gbg = LCD_COLOR_BLACK;
+	yfg = LCD_COLOR_YELLOW; ybg = LCD_COLOR_BLACK;
+	rfg = LCD_COLOR_RED;    rbg = LCD_COLOR_BLACK;
+	switch(diff){
+		case 0: 
+			gfg = LCD_COLOR_GRAY;
+		  gbg = LCD_COLOR_GREEN;
+		break;
+		case 1: 
+			yfg = LCD_COLOR_GRAY;
+		  ybg = LCD_COLOR_YELLOW;
+		break;
+	  case 2: 
+			rfg = LCD_COLOR_GRAY;
+		  rbg = LCD_COLOR_RED;
+		break;
+		
+	}
+	
 	// Display Difficulty Text
 	j = COLS/2 + 25;
 	length = strlen(difficulty);
@@ -274,17 +294,17 @@ void title_screen(void){
 		bitmapOff = courierNew_12ptDescriptors[offset].offset;
 		width = courierNew_12ptDescriptors[offset].widthBits;
 		if(i <= 4){
-			lcd_draw_image(width + j, width, ROWS/2.25, 9, &courierNew_12ptBitmaps[bitmapOff], LCD_COLOR_GREEN, LCD_COLOR_BLACK);
+			lcd_draw_image(width + j, width, ROWS/2.25, 9, &courierNew_12ptBitmaps[bitmapOff], gfg, gbg);
 			if(i == 4)
 					j = COLS/2 + 8;
 		}
 		else if(i < 9){
-			lcd_draw_image(width + j, width, ROWS/1.9, 9, &courierNew_12ptBitmaps[bitmapOff], LCD_COLOR_YELLOW, LCD_COLOR_BLACK);
+			lcd_draw_image(width + j, width, ROWS/1.9, 9, &courierNew_12ptBitmaps[bitmapOff], yfg, ybg);
 			if(i == 8)
 					j = COLS/2 + 10;
 		}
 		else {
-			lcd_draw_image(width + j, width, ROWS/1.65, 9, &courierNew_12ptBitmaps[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+			lcd_draw_image(width + j, width, ROWS/1.65, 9, &courierNew_12ptBitmaps[bitmapOff], rfg, rbg);
 		}	
 		
 		j = 15 + j;
@@ -318,13 +338,13 @@ void title_screen(void){
 	
 	lcd_draw_rectangle(ROWS/2 + 45, 100, COLS/2, 200, LCD_COLOR_BLACK);
 	
-	for (i = 0; i < 1000000000; i++) {}
+	
 
 	// Game Settings
 	//TODO: add main menu to choose easy or medium or hard (select with joystick)
 	//if easy: set pixel_inc to 1, if medium: set pixel_inc to 2, if hard: set pixel_inc to 3
 	//add functionality to start game on any push button press
-	pixel_inc = 1;
+	pixel_inc = diff + 1;
 }
 
 void end_screen(bool newHighScore){
@@ -347,10 +367,21 @@ void end_screen(bool newHighScore){
 void game_main(void) {
 	char lastKey;
 	bool gameOver = false;
+	int i, diff;
 
 	printf("Running...\n");
-
-  title_screen();
+	diff = 3000;
+  for (i = 0; i < 100; i++) {
+		PS2_DIR = ps2_get_direction();
+		if(PS2_DIR == PS2_DIR_UP){
+			diff -= 1;
+		}
+		else if(PS2_DIR == PS2_DIR_DOWN) {
+			diff += 1;
+		}
+		
+		title_screen(diff % 3);
+	}
 	lcd_clear_screen(LCD_COLOR_BLACK);
 	
 	//main game loop
