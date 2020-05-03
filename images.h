@@ -48,6 +48,7 @@ extern const uint8_t orangeWidthPixels;
 extern const uint8_t orangeHeightPixels;
 
 // Font data for Viner Hand ITC 14pt
+// Used for "WELCOME TO FRUIT ASSASSIN"
 extern const uint8_t vinerHandITC_14ptBitmaps[];
 extern const FONT_INFO vinerHandITC_14ptFontInfo;
 extern const FONT_CHAR_INFO vinerHandITC_14ptDescriptors[];
@@ -58,7 +59,34 @@ extern const uint8_t explosionBitmaps [];
 extern const uint8_t explosionWidthPixels;
 extern const uint8_t explosionHeightPixels;
 
+// Font data for Courier New 10pt
+// Used for "USE JOYSTICK TO SELECT LEVEL"
+extern const uint8_t courierNew_10ptBitmaps[];
+extern const FONT_INFO courierNew_10ptFontInfo;
+extern const FONT_CHAR_INFO courierNew_10ptDescriptors[];
 
+// Font data for Courier New 12pt
+// Used for "EASY", "MEDIUM, and "HARD"
+extern const uint8_t courierNew_12ptBitmaps[];
+extern const FONT_INFO courierNew_12ptFontInfo;
+extern const FONT_CHAR_INFO courierNew_12ptDescriptors[];
 
+// Font data for Courier New 10pt
+// Used for "PUSH ANY BUTTON TO START"
+extern const uint8_t courierNew_10ptBitmaps2[];
+extern const FONT_INFO courierNew_10ptFontInfo2;
+extern const FONT_CHAR_INFO courierNew_10ptDescriptors2[];
+
+// Font data for Viner Hand ITC 14pt
+// Used for "GAME OVER"
+extern const uint8_t vinerHandITC_14ptBitmaps2[];
+extern const FONT_INFO vinerHandITC_14ptFontInfo2;
+extern const FONT_CHAR_INFO vinerHandITC_14ptDescriptors2[];
+
+// Font data for Courier New 12pt
+// Used for "SCORE:", "HIGHSCORE:", and "NEW HIGHSCORE!"
+extern const uint8_t courierNew_12ptBitmaps2[];
+extern const FONT_INFO courierNew_12ptFontInfo2;
+extern const FONT_CHAR_INFO courierNew_12ptDescriptors2[];
 
 #endif

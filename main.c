@@ -210,7 +210,7 @@ void title_screen(void){
 	eeprom_byte_read(I2C1_BASE, HS_ADDR, &highscore);
 	printf("Highscore Loaded: %d\n", highscore);
 	printf("Score: %d\n", score);
-	printf("Highschool: %d\n", highscore);
+	printf("Highscore: %d\n", highscore);
 	
 	//turn on the first 3 LEDs to show that there are 3 lives left
 	io_expander_write_reg(MCP23017_GPIOA_R, 0x07);
@@ -275,12 +275,15 @@ void game_main(void) {
 		}
 
 		if (ALERT_APPLE) {//draw or move the apple when the timer is up
+			ALERT_APPLE = false;
 			draw_apple();
 		}
 		if (ALERT_BANANA) {//draw or move the banana when the timer is up
+			ALERT_BANANA = false;
 			draw_banana();
 		}
 		if (ALERT_ORANGE) {//draw or move the orange when the timer is up
+			ALERT_ORANGE = false;
 			draw_orange();
 		}
 		if (ft6x06_read_td_status() == 1 || ft6x06_read_td_status() == 2) {

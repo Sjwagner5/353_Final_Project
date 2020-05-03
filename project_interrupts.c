@@ -97,3 +97,9 @@ void TIMER5A_Handler(void) {
 	TIMER5->ICR |= TIMER_ICR_TATOCINT;
 	return;
 }
+
+//This ISR will handle the interrupt when a push button is pressed
+void GPIOF_Handler(void) {
+	printf("\nBUTTON PRESSED!");
+	GPIOF->ICR |= GPIO_ICR_GPIO_M;
+}
