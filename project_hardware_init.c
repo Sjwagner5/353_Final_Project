@@ -24,19 +24,23 @@
 
 #define	TEN_MS	500000 // this will be used to have Timer 4 interrupt every 10 ms	
 
+
+//*******************************************************************************
+// Configure the IO expander push buttons and GPIO port F to generate interrupts
+//*******************************************************************************
 void config_buttons(void) {
 	 
 	gpio_enable_port(GPIOF_BASE);
 	gpio_config_enable_input(GPIOF_BASE, PF0);
 	gpio_config_digital_enable(GPIOF_BASE, PF0);
 	gpio_config_enable_pullup(GPIOF_BASE, PF0);
-	GPIOF->IS &= ~PF0;
-	GPIOF->ICR |= PF0;
-	GPIOF->IBE &= ~PF0;
-	GPIOF->IEV |= PF0;
-	GPIOF->IM |= PF0;
-	NVIC_SetPriority(gpio_get_irq_num(GPIOF_BASE), 1);
-	NVIC_EnableIRQ(gpio_get_irq_num(GPIOF_BASE));
+	GPIOF->IS &= ~PF0;// Configure for edge based interrupts
+	GPIOF->ICR |= PF0;// Clear any outstanding interrupts
+	GPIOF->IBE &= ~PF0;// Interrupt is controlled by IEV
+	GPIOF->IEV |= PF0;// Set for rising edge interrupts
+	GPIOF->IM |= PF0;// Enable interrupt mask
+	NVIC_SetPriority(gpio_get_irq_num(GPIOF_BASE), 1);// set the priority
+	NVIC_EnableIRQ(gpio_get_irq_num(GPIOF_BASE));// Enable interrupt in NVIC
 	
 	io_expander_write_reg(MCP23017_IODIRB_R, 0x0F);		// Set buttons to inputs
 	io_expander_write_reg(MCP23017_GPPUB_R, 0x0F);		// Pull-up on buttons
@@ -51,6 +55,10 @@ void config_buttons(void) {
 
 }
 
+
+//*****************************************************************************
+// Initialize hardware for the system
+//*****************************************************************************
 void init_hardware(void) {
 
 	init_serial_debug(true, true);

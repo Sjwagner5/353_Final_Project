@@ -45,7 +45,10 @@ PS2_DIR_t ps2_get_direction(void){
 }
 
 
-//Timer 1 ISR that blinks the red LED to indicate that the program is running
+
+//*****************************************************************************
+// Timer 1 ISR blinks the red LED once a second
+//*****************************************************************************
 void TIMER1A_Handler(void) {
 	static int i = 0;
 	if (i%2 == 0) {//alternate between turning the LED on and off each time there is a TIMER 1 interrupt
@@ -57,16 +60,24 @@ void TIMER1A_Handler(void) {
 	TIMER1->ICR |= TIMER_ICR_TATOCINT;
 }
 
-//Timer 2 ISR will move the apple
+
+//*****************************************************************************
+// Timer 2 triggers when to move the apple
+//*****************************************************************************
 void TIMER2A_Handler(void) {
 	ALERT_APPLE = true;
+	// Clear the interrupt
 	TIMER2->ICR |= TIMER_ICR_TATOCINT;
 	return;
 }
 
-//Timer 3 ISR will move the banana
+
+//*****************************************************************************
+// Timer 3 ISR triggers when to move the banana
+//*****************************************************************************
 void TIMER3A_Handler(void) {
 	ALERT_BANANA = true;
+	// Clear the interrupt
 	TIMER3->ICR |= TIMER_ICR_TATOCINT;
 	return;
 }
@@ -93,15 +104,22 @@ void ADC0SS2_Handler(void)
   ADC0->ISC |= ADC_ISC_IN2;
 }
 
-//Timer 5 ISR will move the orange
+
+//*****************************************************************************
+// Timer 5 handler will trigger when to move the orange
+//*****************************************************************************
 void TIMER5A_Handler(void) {
 	ALERT_ORANGE = true;
 	TIMER5->ICR |= TIMER_ICR_TATOCINT;
 	return;
 }
 
+
+//*****************************************************************************
+// GPIO F ISR will trigger when to debounce a button because it was pressed
+//*****************************************************************************
 void GPIOF_Handler(void) {
 	ALERT_BUTTON = true;
-	printf("HANDLER");
+	// Clear the interrupt
 	GPIOF->ICR |= GPIO_ICR_GPIO_M;
 }
