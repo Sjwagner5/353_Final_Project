@@ -82,7 +82,7 @@ bool debounce_fsm(void) {
 	static DEBOUNCE_STATES state = DEBOUNCE_ONE;
   uint8_t pin_logic_level;
 
-  pin_logic_level = io_expander_read_reg(MCP23017_GPIOB_R);//clear interrupt and see if button occurred
+  pin_logic_level = io_expander_read_reg(MCP23017_GPIOB_R);// Clear interrupt and see if button occurred
 
   switch (state)
   {
@@ -151,9 +151,9 @@ uint16_t generate_random_x(uint8_t image_width)
     bit  = ((lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 5) ) & 1;
     lfsr =  (lfsr >> 1) | (bit << 15);
 
-		if (lfsr > (COLS - image_width/2)) {//if the image overlaps the right edge, set it to the right edge
+		if (lfsr > (COLS - image_width/2)) {// If the image overlaps the right edge, set it to the right edge
 			lfsr = COLS-image_width/2 - 1;
-		} else if (lfsr < (0 + image_width/2)) {//if the image overlaps the left edge, set it to the left edge
+		} else if (lfsr < (0 + image_width/2)) {// If the image overlaps the left edge, set it to the left edge
 			lfsr = 0 + image_width/2 + 1;
 		}
     return lfsr;
