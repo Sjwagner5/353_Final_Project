@@ -23,7 +23,7 @@
 #include "main.h"
 #include "project_interrupts.h"
 
-#define OFFSET 700 //used to increase and decrease the ADC thresholds so that the joystick is not as sensitive
+#define OFFSET 1000 //used to increase and decrease the ADC thresholds so that the joystick is not as sensitive
 
 static volatile uint16_t PS2_X_DATA = 0;
 static volatile uint16_t PS2_Y_DATA = 0;//store the y data ADC value of the joystick

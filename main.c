@@ -289,7 +289,7 @@ void title_screen(int diff){
 	int j;
 	char welcome[] = "WELCOME TO FRUIT ASSASSIN";
 	char joystick[] = "USE JOYSTICK TO SELECT LEVEL";
-	char difficulty[] = "EASY MED HARD";
+	char difficulty[] = "EASYMEDIUMHARD";
 	char button[] = "PUSH TO START";
 	uint16_t gfg, yfg, rfg;
 
@@ -360,24 +360,24 @@ void title_screen(int diff){
 	}
 
 	// Display Difficulty Text
-	j = COLS/2 + 25;
+	j = COLS/2 + 20;
 	length = strlen(difficulty);
 	for (i = 0; i < length; i++) {
 		offset = difficulty[i] - 'A';
 		bitmapOff = courierNew_12ptDescriptors[offset].offset;
 		width = courierNew_12ptDescriptors[offset].widthBits;
-		if(i <= 4){
-			lcd_draw_image(width + j, width, ROWS/2.25, 9, &courierNew_12ptBitmaps[bitmapOff], gfg, LCD_COLOR_BLACK);
-			if(i == 4)
-					j = COLS/2 + 8;
+		if(i < 4){
+			lcd_draw_image(15 + j, width, ROWS/2.25, 9, &courierNew_12ptBitmaps[bitmapOff], gfg, LCD_COLOR_BLACK);
+			if(i == 3)
+					j = COLS/2 + 5;
 		}
-		else if(i < 9){
-			lcd_draw_image(width + j, width, ROWS/1.9, 9, &courierNew_12ptBitmaps[bitmapOff], yfg, LCD_COLOR_BLACK);
-			if(i == 8)
-					j = COLS/2 + 10;
+		else if(i < 10){
+			lcd_draw_image(15 + j, width, ROWS/1.9, 9, &courierNew_12ptBitmaps[bitmapOff], yfg, LCD_COLOR_BLACK);
+			if(i == 9)
+					j = COLS/2 + 5;
 		}
 		else {
-			lcd_draw_image(width + j, width, ROWS/1.65, 9, &courierNew_12ptBitmaps[bitmapOff], rfg, LCD_COLOR_BLACK);
+			lcd_draw_image(15 + j, width, ROWS/1.65, 9, &courierNew_12ptBitmaps[bitmapOff], rfg, LCD_COLOR_BLACK);
 		}
 		j = 15 + j;
 	}
@@ -406,7 +406,7 @@ void title_screen(int diff){
 	APPLE_Y_COORD = COLS + appleHeightPixels/2;
 	lcd_draw_image(APPLE_X_COORD, appleWidthPixels, APPLE_Y_COORD, appleHeightPixels, appleBitmaps, LCD_COLOR_RED, LCD_COLOR_BLACK);
 
-	lcd_draw_rectangle(ROWS/2 + 45, 100, COLS/2, 200, LCD_COLOR_BLACK);
+	//lcd_draw_rectangle(ROWS/2 + 45, 100, COLS/2, 200, LCD_COLOR_BLACK);
 
 	// Game Settings
 	// if easy: set pixel_inc to 1, if medium: set pixel_inc to 2, if hard: set pixel_inc to 3
@@ -423,12 +423,12 @@ void end_screen(bool newHighScore) {
 	int length;
 	int i;
 	int j;
-	char gameover[] = "GAME OVER";
+	char gameover[] = "GAMEOVER";
 	char scoreArr[] = "SCORE:";
 	char scoreValue[20];
 	char highScoreValue[20];
 	char highscoreArr[] = "HIGHSCORE:";
-	char newHighScoreArr[] = "NEW HIGHSCORE!";
+	char newHighScoreArr[] = "NEWHIGHSCORE!";
 
 	// Get score/highscore values for display
 	snprintf(scoreValue, 20, "%d", score);
@@ -447,7 +447,7 @@ void end_screen(bool newHighScore) {
 		offset = gameover[i] - 'A';
 		bitmapOff = vinerHandITC_14ptDescriptors2[offset].offset;
 		width = vinerHandITC_14ptDescriptors2[offset].widthBits;
-		lcd_draw_image(width/2 + 10 + j, width, ROWS/5, 15, &vinerHandITC_14ptBitmaps2[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+		lcd_draw_image(10 + j, width, ROWS/6, 15, &vinerHandITC_14ptBitmaps2[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
 		j = 20 + j;
 	}
 
@@ -470,7 +470,7 @@ void end_screen(bool newHighScore) {
 		bitmapOff = courierNew_12ptDescriptors3[offset].offset;
 		width = courierNew_12ptDescriptors3[offset].widthBits;
 		lcd_draw_image(15 + j, width, ROWS/3, 15, &courierNew_12ptBitmaps3[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
-		j = 10 + j;
+		j = 15 + j;
 	}
 
 	// Display High Score Text
@@ -484,7 +484,7 @@ void end_screen(bool newHighScore) {
 		j = 10 + j;
 	}
 
-		// Display Score Value Text
+	// Display High Score Value Text
 	j = COLS/1.7;
 	length = strlen(highScoreValue);
 	for (i = 0; i < length; i++) {
@@ -492,31 +492,24 @@ void end_screen(bool newHighScore) {
 		bitmapOff = courierNew_12ptDescriptors3[offset].offset;
 		width = courierNew_12ptDescriptors3[offset].widthBits;
 		lcd_draw_image(15 + j, width, ROWS/2, 15, &courierNew_12ptBitmaps3[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
-		j = 10 + j;
+		j = 15 + j;
 	}
 
 	// Store New Highscore
 	if(newHighScore){
 		highscore = score;
 		eeprom_byte_write(I2C1_BASE, HS_ADDR, highscore);
-		printf("Highscore Stored: %d\n", highscore);
-
-		// Display New High Score Text
-		j = 20;
+   	// Display New High Score Text
+		j = 0;
 		length = strlen(newHighScoreArr);
 		for (i = 0; i < length; i++) {
 			offset = newHighScoreArr[i] - '!';
 			bitmapOff = courierNew_12ptDescriptors2[offset].offset;
 			width = courierNew_12ptDescriptors2[offset].widthBits;
-			lcd_draw_image(width + j, width, ROWS/1.25, 10, &courierNew_12ptBitmaps2[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
-			j = 10 + j;
+			lcd_draw_image(15 + j, width, ROWS/1.25, 10, &courierNew_12ptBitmaps2[bitmapOff], LCD_COLOR_RED, LCD_COLOR_BLACK);
+			j = 15 + j;
 		}
 	}
-	printf("Score: %d\n", score);
-	printf("Highschool: %d\n", highscore);
-
-
-	printf("END SCREEN\n\n\n");
 }
 
 //*****************************************************************************
@@ -525,7 +518,7 @@ void end_screen(bool newHighScore) {
 void game_main(void) {
 	char lastKey;
 	bool gameOver = false;
-	int diff;
+	int diff, i;
 	bool buttonPress = false;
 	printf("Running...\n");
 
@@ -537,9 +530,9 @@ void game_main(void) {
 
 	// Load Highscore
 	eeprom_byte_read(I2C1_BASE, HS_ADDR, &highscore);
-	printf("Highscore Loaded: %d\n", highscore);
-	printf("Score: %d\n", score);
-	printf("Highscore: %d\n", highscore);
+	//printf("Highscore Loaded: %d\n", highscore);
+	//printf("Score: %d\n", score);
+	//printf("Highscore: %d\n", highscore);
 
 	diff = 3000;
 	while(!buttonPress) {
@@ -549,7 +542,7 @@ void game_main(void) {
 		else if(PS2_DIR == PS2_DIR_DOWN) {
 			diff += 1;
 		}
-
+		for(i = 0; i < 1000000; i++){};
 		title_screen(diff % 3);
 		if (ALERT_BUTTON) {
 			debounce_wait();
