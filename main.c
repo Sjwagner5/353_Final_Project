@@ -528,7 +528,7 @@ void game_main(void) {
 	int diff;
 	bool buttonPress = false;
 	printf("Running...\n");
-	
+
 	// Title Screen Menu
 	printf("TITLE SCREEN\n");
 
@@ -540,7 +540,7 @@ void game_main(void) {
 	printf("Highscore Loaded: %d\n", highscore);
 	printf("Score: %d\n", score);
 	printf("Highscore: %d\n", highscore);
-	
+
 	diff = 3000;
 	while(!buttonPress) {
 		if(PS2_DIR == PS2_DIR_UP){
