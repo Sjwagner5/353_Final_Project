@@ -293,18 +293,6 @@ void title_screen(int diff){
 	char button[] = "PUSH TO START";
 	uint16_t gfg, yfg, rfg;
 
-	// Title Screen Menu
-	printf("TITLE SCREEN\n");
-
-	// Toggle the comment below to initalize EEPROM to 0 at address HS_ADDR
-	//eeprom_byte_write(I2C1_BASE, HS_ADDR, 0);
-
-	// Load Highscore
-	eeprom_byte_read(I2C1_BASE, HS_ADDR, &highscore);
-	printf("Highscore Loaded: %d\n", highscore);
-	printf("Score: %d\n", score);
-	printf("Highscore: %d\n", highscore);
-
 	// Turn on the first 3 LEDs to show that there are 3 lives left
 	io_expander_write_reg(MCP23017_GPIOA_R, 0x07);
 
@@ -540,7 +528,19 @@ void game_main(void) {
 	int diff;
 	bool buttonPress = false;
 	printf("Running...\n");
+	
+	// Title Screen Menu
+	printf("TITLE SCREEN\n");
 
+	// Toggle the comment below to initalize EEPROM to 0 at address HS_ADDR
+	//eeprom_byte_write(I2C1_BASE, HS_ADDR, 0);
+
+	// Load Highscore
+	eeprom_byte_read(I2C1_BASE, HS_ADDR, &highscore);
+	printf("Highscore Loaded: %d\n", highscore);
+	printf("Score: %d\n", score);
+	printf("Highscore: %d\n", highscore);
+	
 	diff = 3000;
 	while(!buttonPress) {
 		if(PS2_DIR == PS2_DIR_UP){
