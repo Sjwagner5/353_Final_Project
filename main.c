@@ -40,17 +40,21 @@ volatile bool APPLE_PRESENT = false;
 volatile bool BANANA_PRESENT = false;
 volatile bool ORANGE_PRESENT = false;
 
+// Start State for random number generator
 static const uint16_t START_STATE = 0xACE7u;
 
+// Game stats/configurations
 static int score = 0;
 static int numLives = 3;
 static uint8_t highscore = 0;
 volatile int pixel_inc = 1;
 
+// Joystick and Button variables
 volatile PS2_DIR_t PS2_DIR = PS2_DIR_CENTER;
-
 volatile bool ALERT_BUTTON;
+
 //*****************************************************************************
+// Diable Interrupts
 //*****************************************************************************
 void DisableInterrupts(void)
 {
@@ -60,6 +64,7 @@ void DisableInterrupts(void)
 }
 
 //*****************************************************************************
+// Enable Interrupts
 //*****************************************************************************
 void EnableInterrupts(void)
 {
@@ -68,6 +73,9 @@ void EnableInterrupts(void)
   }
 }
 
+//*****************************************************************************
+// Delay for Debounce check
+//*****************************************************************************
 void debounce_wait(void) {
   int i = 10000;
   // Delay
@@ -78,6 +86,9 @@ void debounce_wait(void) {
   }
 }
 
+//*****************************************************************************
+// Button Debounce finite state machine
+//*****************************************************************************
 bool debounce_fsm(void) {
 	static DEBOUNCE_STATES state = DEBOUNCE_ONE;
   uint8_t pin_logic_level;
@@ -242,9 +253,9 @@ void life_lost(void) {
 // Check if the most recent touch event is on top of 1 of the fruits
 //*****************************************************************************
 void check_touch(void) {
+	// Get the coordinates of the latest x and y touch
 	int xTouch = ft6x06_read_x();
 	int yTouch = ft6x06_read_y();
-	// Get the coordinates of the latest x and y touch
 
 	// Check if the apple has been touched
 	if (APPLE_X_COORD - appleWidthPixels/2 <= xTouch &&
@@ -255,6 +266,7 @@ void check_touch(void) {
 			explode_fruit(APPLE_X_COORD, APPLE_Y_COORD);
 			APPLE_PRESENT = false;
 			score++;
+				
 	// Check if the banana has been touched
 	} else if (BANANA_X_COORD - bananaWidthPixels/2 <= xTouch &&
 						 BANANA_X_COORD + bananaWidthPixels/2 >= xTouch &&
@@ -356,7 +368,6 @@ void title_screen(int diff){
 	  case 2:
 			rfg = LCD_COLOR_RED;
 		break;
-
 	}
 
 	// Display Difficulty Text
@@ -406,10 +417,7 @@ void title_screen(int diff){
 	APPLE_Y_COORD = COLS + appleHeightPixels/2;
 	lcd_draw_image(APPLE_X_COORD, appleWidthPixels, APPLE_Y_COORD, appleHeightPixels, appleBitmaps, LCD_COLOR_RED, LCD_COLOR_BLACK);
 
-	//lcd_draw_rectangle(ROWS/2 + 45, 100, COLS/2, 200, LCD_COLOR_BLACK);
-
-	// Game Settings
-	// if easy: set pixel_inc to 1, if medium: set pixel_inc to 2, if hard: set pixel_inc to 3
+	// Set pixel incrementation based on difficulty selected
 	pixel_inc = diff + 1;
 }
 
@@ -511,6 +519,10 @@ void end_screen(bool newHighScore) {
 		}
 	}
 }
+
+//*****************************************************************************
+// UART0: Pause and resume when space bar is hit
+//*****************************************************************************
 void pause(void){
 	char lastKey;
 	
@@ -550,7 +562,7 @@ void game_main(void) {
 
 	diff = 100000;
 	while(!buttonPress) {
-		// UART0: Pause and resume when space bar is hit.
+		// Pause game option for title screen
 		pause();
 		
 		// Difficulty selection toggle
@@ -578,7 +590,7 @@ void game_main(void) {
 	//main game loop
 	while (!gameOver) {
 		
-		// UART0: Pause and resume when space bar is hit.
+		// Pause game option for game screen
 		pause();
 
 		// Draw or move the apple when the timer is up
