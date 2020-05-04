@@ -542,7 +542,7 @@ void game_main(void) {
 		else if(PS2_DIR == PS2_DIR_DOWN) {
 			diff += 1;
 		}
-		for(i = 0; i < 1000000; i++){};
+		for(i = 0; i < 500000; i++){};
 		title_screen(diff % 3);
 		if (ALERT_BUTTON) {
 			debounce_wait();
