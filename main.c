@@ -511,12 +511,26 @@ void end_screen(bool newHighScore) {
 		}
 	}
 }
+void pause(void){
+	char lastKey;
+	
+	lastKey = UART0_Rx_Buffer.array[(UART0_Rx_Buffer.produce_count - 1) % UART_BUFFER_SIZE];
+	if(lastKey == ' ') {
+		printf("Paused.\n");
+		pc_buffer_add(&UART0_Rx_Buffer, '`');
+		lastKey = UART0_Rx_Buffer.array[(UART0_Rx_Buffer.produce_count - 1) % UART_BUFFER_SIZE];
+		while(lastKey != ' '){
+			lastKey = UART0_Rx_Buffer.array[(UART0_Rx_Buffer.produce_count - 1) % UART_BUFFER_SIZE];
+		}
+		pc_buffer_add(&UART0_Rx_Buffer, '`');
+		printf("Running...\n");
+	}
+}
 
 //*****************************************************************************
 // Main Game Function
 //*****************************************************************************
 void game_main(void) {
-	char lastKey;
 	bool gameOver = false;
 	int diff, i;
 	bool buttonPress = false;
@@ -534,16 +548,24 @@ void game_main(void) {
 	//printf("Score: %d\n", score);
 	//printf("Highscore: %d\n", highscore);
 
-	diff = 3000;
+	diff = 100000;
 	while(!buttonPress) {
+		// UART0: Pause and resume when space bar is hit.
+		pause();
+		
+		// Difficulty selection toggle
 		if(PS2_DIR == PS2_DIR_UP){
 			diff -= 1;
 		}
 		else if(PS2_DIR == PS2_DIR_DOWN) {
 			diff += 1;
 		}
+		
+		// Loop makes difficulty selection more user friendly
 		for(i = 0; i < 500000; i++){};
+			
 		title_screen(diff % 3);
+			
 		if (ALERT_BUTTON) {
 			debounce_wait();
 			buttonPress = debounce_fsm();
@@ -555,18 +577,9 @@ void game_main(void) {
 
 	//main game loop
 	while (!gameOver) {
+		
 		// UART0: Pause and resume when space bar is hit.
-		lastKey = UART0_Rx_Buffer.array[(UART0_Rx_Buffer.produce_count - 1) % UART_BUFFER_SIZE];
-		if(lastKey == ' ') {
-			printf("Paused.\n");
-			pc_buffer_add(&UART0_Rx_Buffer, '`');
-			lastKey = UART0_Rx_Buffer.array[(UART0_Rx_Buffer.produce_count - 1) % UART_BUFFER_SIZE];
-			while(lastKey != ' '){
-				lastKey = UART0_Rx_Buffer.array[(UART0_Rx_Buffer.produce_count - 1) % UART_BUFFER_SIZE];
-			}
-			pc_buffer_add(&UART0_Rx_Buffer, '`');
-			printf("Running...\n");
-		}
+		pause();
 
 		// Draw or move the apple when the timer is up
 		if (ALERT_APPLE) {
