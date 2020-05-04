@@ -99,7 +99,7 @@ bool debounce_fsm(void) {
   {
     case DEBOUNCE_ONE:
     {
-      if(pin_logic_level) {
+      if(pin_logic_level == 0x0F) {
         state = DEBOUNCE_ONE;
       }
       else {
@@ -109,7 +109,7 @@ bool debounce_fsm(void) {
     }
     case DEBOUNCE_1ST_ZERO:
     {
-      if(pin_logic_level) {
+      if(pin_logic_level == 0x0F) {
         state = DEBOUNCE_ONE;
       }
       else {
@@ -119,7 +119,7 @@ bool debounce_fsm(void) {
     }
     case DEBOUNCE_2ND_ZERO:
     {
-      if(pin_logic_level) {
+      if(pin_logic_level == 0x0F) {
         state = DEBOUNCE_ONE;
       }
       else {
@@ -129,7 +129,7 @@ bool debounce_fsm(void) {
     }
     case DEBOUNCE_PRESSED:
     {
-      if(pin_logic_level){
+      if(pin_logic_level == 0x0F) {
         state = DEBOUNCE_ONE;
       }
       else {
